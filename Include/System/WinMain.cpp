@@ -46,6 +46,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE previnstacne, LPSTR ipszCmdPar
 	#pragma region Released Before DestroyWindow
 	WindowManager::GetInstance()->ReleaseInstance();
 	DirectXManager::GetInstance()->ReleaseInstance();
+
+	delete execute;
 	#pragma endregion
 	
 	//Escape Program
