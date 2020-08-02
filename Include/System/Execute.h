@@ -1,4 +1,5 @@
 #pragma once
+#include "Structure/GameObject.h"
 
 class Execute
 {
@@ -15,5 +16,8 @@ public:
 	void Set2DObject();
 	void Render3D();
 	void Render2D();
+
+public:
+	GameObject* camera;
 };
 

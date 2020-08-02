@@ -3,6 +3,7 @@
 
 Execute::~Execute()
 {
+	delete camera;
 }
 
 void Execute::Init()
@@ -24,6 +25,8 @@ void Execute::SetShaders()
 
 void Execute::Set3DObject()
 {
+	camera = new GameObject(ObjectType::Empty);
+	camera->Init();
 }
 
 void Execute::Set2DObject()
@@ -32,6 +35,7 @@ void Execute::Set2DObject()
 
 void Execute::Render3D()
 {
+	camera->Update();
 }
 
 void Execute::Render2D()

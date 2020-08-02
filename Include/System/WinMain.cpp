@@ -16,9 +16,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE previnstacne, LPSTR ipszCmdPar
 	WindowManager::GetInstance()->SetWindowHandle(g_handle);
 	WindowManager::GetInstance()->SetWindowWidth(static_cast<float>(rect.right - rect.left));
 	WindowManager::GetInstance()->SetWindowHeight(static_cast<float>(rect.bottom - rect.top));
-	#pragma endregion
 
 	DirectXManager::GetInstance()->Init();
+	#pragma endregion
 
 	Execute* execute = new Execute();
 	execute->Init();

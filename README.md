@@ -1,22 +1,12 @@
 # DirectX11-PF-FrameWork
 DirectX11 PF FrameWork
 
-ê¸°ë³¸ì ì¸ í”„ë¡œì íŠ¸ ì…‹íŒ…
- - ë¯¸ë¦¬ì»´íŒŒì¼ëœ í—¤ë”íŒŒì¼ ì‚¬ìš©í•©ë‹ˆë‹¤ - D3DUtil.h
- - ìœ ë‹ˆì½”ë“œ ë¬¸ìž ì§‘í•© ì‚¬ìš©í•©ë‹ˆë‹¤.
- - ê²½ë¡œë¬¸ì œë‚˜ ë¼ì´ë¸ŒëŸ¬ë¦¬ í¬í•¨í• ìˆ˜ ì—†ëŠ” ì—ëŸ¬ë°œìƒì‹œ í¬í•¨ ë””ë ‰í„°ë¦¬, ë¼ì´ë¸Œë””ë ‰í„°ë¦¬ ìž¬ëŒ€ë¡œ ì„¤ì •ë˜ìžˆëŠ”ì§€ í™•ì¸í•´ì£¼ì„¸ìš”.
- - ì•ˆë³´ì´ëŠ” ì†ŒìŠ¤íŒŒì¼ì´ ìžˆì„ê²½ìš° ì†”ë£¨ì…˜ íƒìƒ‰ê¸°ì—ì„œ ëª¨ë“  íŒŒì¼ í‘œì‹œ ëˆŒëŸ¬ì£¼ì„¸ìš” ëª¨ë“ ì†ŒìŠ¤íŒŒì¼ì€ Include í´ë”ë‚´ì— ìžˆìŠµë‹ˆë‹¤.
- - Textì¶œë ¥ì€ Direct2Dì™€ DirectWriteë¥¼ ì‚¬ìš©í•©ë‹ˆë‹¤. (ImageëŠ” ì•„ì§ ë¯¸ì •)
- 
-ì¶”ê°€ ì¢…ì†ì„±
- - d3d11.lib
- - d3dx11d.lib
- - d3dcompiler.lib
- - dxerr.lib
- - dxgi.lib
- - dxguid.lib
- - dinput8.lib
- - DXGI.lib
- 
- 
-í”„ë¡œê·¸ëž¨ ìµœì´ˆ ì‹¤í–‰ì‹œ ì™¼ìª½ ìƒë‹¨ì— "Text Sample 1" ì´ë¼ëŠ” ë¬¸êµ¬ê°€ ë– ì•¼ë©ë‹ˆë‹¤.
+±âº»ÀûÀÎ ÇÁ·ÎÁ§Æ® ¼ÂÆÃ
+ - ¹Ì¸®ÄÄÆÄÀÏµÈ Çì´õÆÄÀÏ »ç¿ëÇÕ´Ï´Ù - D3DUtil.h
+ - À¯´ÏÄÚµå ¹®ÀÚ ÁýÇÕ »ç¿ëÇÕ´Ï´Ù.
+ - °æ·Î¹®Á¦³ª ¶óÀÌºê·¯¸® Æ÷ÇÔÇÒ¼ö ¾ø´Â ¿¡·¯¹ß»ý½Ã Æ÷ÇÔ µð·ºÅÍ¸®, ¶óÀÌºêµð·ºÅÍ¸®, Ãß°¡ Æ÷ÇÔ µð·ºÅÍ¸®°¡ Àç´ë·Î ¼³Á¤µÇÀÖ´ÂÁö È®ÀÎÇØÁÖ¼¼¿ä.
+ - ¾Èº¸ÀÌ´Â ¼Ò½ºÆÄÀÏÀÌ ÀÖÀ»°æ¿ì ¼Ö·ç¼Ç Å½»ö±â¿¡¼­ ¸ðµç ÆÄÀÏ Ç¥½Ã ´­·¯ÁÖ¼¼¿ä ¸ðµç¼Ò½ºÆÄÀÏÀº Include Æú´õ³»¿¡ ÀÖ½À´Ï´Ù.
+ - TextÃâ·ÂÀº Direct2D¿Í DirectWrite¸¦ »ç¿ëÇÕ´Ï´Ù. (Image´Â ¾ÆÁ÷ ¹ÌÁ¤)
+ - ÄÚµå°¡ ±äºÎºÐÀÌ³ª °¡µ¶¼ºÀÌ ¶³¾îÁö´Â ºÎºÐÀº region ±â´ÉÀ¸·Î ³ª´³½À´Ï´Ù.. regionÀÌ º¸ÀÌ¸é Á¢¾î¼­ ¾î¶² ±â´ÉÀ» ÇÏ´Â ÄÚµåÀÎÁö È®ÀÎÇÏ¼¼¿ä
+
+DirectX ÃÊ±âÈ­ ºÎºÐ±îÁö ¿Ï·áµÈ ÇÁ·¹ÀÓ¿öÅ©ÀÔ´Ï´Ù. ÇÁ·Î±×·¥ ÃÖÃÊ ½ÇÇà½Ã ¿ÞÂÊ »ó´Ü¿¡ "Text Sample 1" ÀÌ¶ó´Â ¹®±¸°¡ ¶°¾ßµË´Ï´Ù.
