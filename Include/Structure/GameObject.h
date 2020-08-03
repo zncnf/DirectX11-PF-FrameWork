@@ -15,7 +15,8 @@ enum class ObjectType
 class GameObject : public Object
 {
 public:
-	GameObject(ObjectType _objectType);
+	GameObject(ObjectType _objectType, const char* filepath = "");
+	GameObject(aiNode* _node, const aiScene* _pScene);
 	virtual ~GameObject();
 
 public:
@@ -31,8 +32,9 @@ public:
 
 public:
 	GameObject* gameObject = nullptr;
-	GameObject* parent = nullptr;
-	Transform* transform = nullptr;
+	GameObject* parent     = nullptr;
+	Transform* transform   = nullptr;
+	const aiScene* pScene  = nullptr;
 
 	bool active;
 

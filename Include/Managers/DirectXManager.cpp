@@ -301,6 +301,16 @@ void DirectXManager::TurnOnAlphaBlending()
 	pDevice_Context->OMSetBlendState(pAlphaBlendingState, blendFactor, 0xffffffff);
 }
 
+ID3D11Device * DirectXManager::GetDevice()
+{
+	return pDevice;
+}
+
+ID3D11DeviceContext * DirectXManager::GetDeviceContext()
+{
+	return pDevice_Context;
+}
+
 void DirectXManager::BeginDraw()
 {
 	pDevice_Context->ClearRenderTargetView(pRender_Target_View, clearColor);

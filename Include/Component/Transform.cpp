@@ -17,6 +17,8 @@ Transform::Transform(GameObject * _gameObject)
 	forward = D3DXVECTOR3(0, 0, 1);
 	up	    = D3DXVECTOR3(0, 1, 0);
 	right   = D3DXVECTOR3(1, 0, 0);
+
+	D3DXMatrixIdentity(&worldMatrix);
 }
 
 Transform::~Transform()

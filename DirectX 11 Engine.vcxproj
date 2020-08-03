@@ -75,9 +75,9 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;C:\Users\dpals\Desktop\DirectX 11 Engine\Include\Managers;C:\Users\dpals\Desktop\DirectX 11 Engine\Include\System;C:\Users\dpals\Desktop\DirectX 11 Engine\Include\Structure;C:\Users\dpals\Desktop\DirectX 11 Engine\Include\Component;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;C:\Users\dpals\Desktop\DirectX 11 Engine\Include\Managers;C:\Users\dpals\Desktop\DirectX 11 Engine\Include\System;C:\Users\dpals\Desktop\DirectX 11 Engine\Include\Structure;C:\Users\dpals\Desktop\DirectX 11 Engine\Include\Component;C:\Users\dpals\Desktop\DirectX 11 Engine\Include\Shader;$(IncludePath)</IncludePath>
     <ReferencePath>$(ReferencePath)</ReferencePath>
-    <LibraryPath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x64;$(LibraryPath)</LibraryPath>
+    <LibraryPath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x64;C:\Users\dpals\Desktop\DirectX 11 Engine\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -152,6 +152,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Include\Shader\DefaultShader_Specular.h" />
+    <ClInclude Include="Include\Managers\GameManager.h" />
+    <ClInclude Include="Include\Component\Camera.h" />
     <ClInclude Include="Include\Structure\Component.h" />
     <ClInclude Include="Include\Structure\GameObject.h" />
     <ClInclude Include="Include\System\Execute.h" />
@@ -161,8 +164,15 @@
     <ClInclude Include="Include\System\WinMain.h" />
     <ClInclude Include="Include\Structure\Object.h" />
     <ClInclude Include="Include\Component\Transform.h" />
+    <ClInclude Include="Include\Shader\Shader.h" />
+    <ClInclude Include="Include\Component\MeshFilter.h" />
+    <ClInclude Include="Include\Component\MeshRenderer.h" />
+    <ClInclude Include="Include\Managers\ResourceManager.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Include\Shader\DefaultShader_Specular.cpp" />
+    <ClCompile Include="Include\Managers\GameManager.cpp" />
+    <ClCompile Include="Include\Component\Camera.cpp" />
     <ClCompile Include="Include\Structure\Component.cpp" />
     <ClCompile Include="Include\Structure\GameObject.cpp" />
     <ClCompile Include="Include\System\Execute.cpp" />
@@ -174,6 +184,10 @@
     <ClCompile Include="Include\System\WinMain.cpp" />
     <ClCompile Include="Include\Structure\Object.cpp" />
     <ClCompile Include="Include\Component\Transform.cpp" />
+    <ClCompile Include="Include\Shader\Shader.cpp" />
+    <ClCompile Include="Include\Component\MeshFilter.cpp" />
+    <ClCompile Include="Include\Component\MeshRenderer.cpp" />
+    <ClCompile Include="Include\Managers\ResourceManager.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

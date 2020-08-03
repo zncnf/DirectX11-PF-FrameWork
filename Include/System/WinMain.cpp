@@ -35,9 +35,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE previnstacne, LPSTR ipszCmdPar
 		else
 		{
 			DirectXManager::GetInstance()->BeginDraw();
-
-			execute->Update();
-
+			{
+				execute->Update();
+			}
 			DirectXManager::GetInstance()->EndDraww();
 		}
 	}
@@ -46,7 +46,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE previnstacne, LPSTR ipszCmdPar
 	#pragma region Released Before DestroyWindow
 	WindowManager::GetInstance()->ReleaseInstance();
 	DirectXManager::GetInstance()->ReleaseInstance();
-
+	GameManager::GetInstance()->ReleaseInstance();
 	delete execute;
 	#pragma endregion
 	

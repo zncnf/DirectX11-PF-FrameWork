@@ -1,6 +1,8 @@
 #pragma once
 #pragma comment(linker, "/entry:WinMainCRTStartup /subsystem:console")
 
+#define NOMINMAX
+
 // 미리컴파일된 헤더(Precompiled Headers)를 사용하는 모든 cpp파일에 추가시켜주면 됩니다.
 
 #pragma region C/C++ Librarys
@@ -38,9 +40,21 @@
 #pragma comment(lib, "D2d1.lib")
 #pragma endregion
 
+#pragma region External Librarys
+#include "assimp/Importer.hpp"
+#include "assimp/cimport.h"
+#include "assimp/postprocess.h"
+#include "assimp/scene.h"
+
+#pragma comment(lib, "assimp-vc140-mt.lib")
+#pragma endregion
+
+
 #pragma region Managers
 #include "WindowManager.h"
 #include "DirectXManager.h"
+#include "Managers/GameManager.h"
+#include "Managers/ResourceManager.h"
 #pragma endregion
 
 #pragma region Namespace
@@ -48,12 +62,43 @@ using namespace std;
 #pragma endregion
 
 #pragma region Macros
-#define NOMINMAX
-
 #define ReleaseCOM(x)      { if(x){ x->Release(); x = nullptr; } }
 #define SafeDelete(x)      { delete x; x = nullptr; }
 #define SafeDeleteArray(x) { if(x) { delete[] (x); (x) = nullptr; } }
 #pragma endregion
+
+#pragma region Structs
+struct CBuffer_Matrix
+{
+	D3DXMATRIX m_worldMatrix;
+	D3DXMATRIX m_viewMatrix;
+	D3DXMATRIX m_projectionMatrix;
+};
+
+struct CBuffer_Camera
+{
+	D3DXVECTOR3 cameraPosition;
+	float		padding;
+};
+
+struct VertexType_PTN
+{
+	D3DXVECTOR3 position;
+	D3DXVECTOR2 texture;
+	D3DXVECTOR3 normal;
+};
+
+struct ShaderType_Specular
+{
+	D3DXVECTOR4 ambientColor;
+	D3DXVECTOR4 diffuseColor;
+	D3DXVECTOR3 lightDirection;
+	float	    specularPower;
+	D3DXVECTOR4 specularColor;
+};
+#pragma endregion
+
+
 
 
 
