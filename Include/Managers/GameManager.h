@@ -12,6 +12,9 @@ public:
 	void   ReleaseInstance();
 
 public:
+	void Init();
+
+public:
 	D3DXMATRIX worldMatrix;
 	D3DXMATRIX viewMatrix;
 	D3DXMATRIX viewMatrix_2D;
@@ -21,5 +24,7 @@ public:
 	D3DXVECTOR3 camera_Up;
 	D3DXVECTOR3 camera_Position;
 	D3DXVECTOR3 camera_Lookat;
+
+	D3DXVECTOR3 drectionalLight;
 };
 

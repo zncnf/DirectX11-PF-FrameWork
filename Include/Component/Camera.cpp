@@ -33,7 +33,7 @@ void Camera::Init()
 
 void Camera::Update()
 {
-	GameManager::GetInstance()->camera_Position = D3DXVECTOR3(0, 50, -50);
+	GameManager::GetInstance()->camera_Position = D3DXVECTOR3(0, 0, -100);
 	GameManager::GetInstance()->camera_Lookat = gameObject->transform->position + gameObject->transform->forward;
 	GameManager::GetInstance()->camera_Up = D3DXVECTOR3(0, 1, 0);
 

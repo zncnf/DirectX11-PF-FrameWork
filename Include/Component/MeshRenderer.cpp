@@ -2,19 +2,15 @@
 #include "MeshRenderer.h"
 #include "Transform.h"
 
-MeshRenderer::MeshRenderer(GameObject * _object, const aiScene * _pScene)
+MeshRenderer::MeshRenderer(GameObject * _object, const aiScene * _pScene, aiNode* _node)
 {
 	gameObject = _object;
-	pScene = _pScene;
+	pScene     = _pScene;
+	node       = _node;
 
 	pShader = ResourceManager::GetInstance()->getShader("DefaultShader_Specular");
 
-	for (UINT i = 0; i < pScene->mNumMaterials; i++)
-	{
-		pScene->mMaterials[0]->Get(AI_MATKEY_COLOR_DIFFUSE, diffuseColor);
-		pScene->mMaterials[0]->Get(AI_MATKEY_COLOR_AMBIENT, ambientColor);
-		pScene->mMaterials[0]->Get(AI_MATKEY_COLOR_SPECULAR, specularColor);
-	}
+	ProcessNode(node, pScene);
 }
 
 MeshRenderer::~MeshRenderer()
@@ -33,6 +29,7 @@ void MeshRenderer::Init()
 		{
 			pScene->mMaterials[i]->GetTexture(aiTextureType_DIFFUSE, 0, &path_astr);
 			path_str = path_astr.C_Str();
+
 			if (path_str.length() != 0)
 				break;
 		}
@@ -55,10 +52,10 @@ void MeshRenderer::Init()
 		desc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
 		desc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
 		desc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
-		desc.BorderColor[0] = 0; //R
-		desc.BorderColor[1] = 0; //G
-		desc.BorderColor[2] = 0; //B
-		desc.BorderColor[3] = 0; //A
+		desc.BorderColor[0] = 0;
+		desc.BorderColor[1] = 0;
+		desc.BorderColor[2] = 0;
+		desc.BorderColor[3] = 0;
 		desc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
 		desc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
 		desc.MaxAnisotropy = 16;
@@ -84,6 +81,31 @@ void MeshRenderer::Update()
 		DirectXManager::GetInstance()->GetDeviceContext()->PSSetShaderResources(0, 1, &m_ShaderResource);
 		DirectXManager::GetInstance()->GetDeviceContext()->PSSetSamplers(0, 1, &m_SampleState);
 	}
+}
+
+void MeshRenderer::ProcessNode(aiNode * node, const aiScene * scene)
+{
+	for (UINT i = 0; i < node->mNumMeshes; i++)
+	{
+		aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
+		ProcessMesh(mesh, scene);
+	}
+}
+
+void MeshRenderer::ProcessMesh(aiMesh * mesh, const aiScene * scene)
+{
+	if (mesh->mMaterialIndex >= 0)
+	{
+		aiMaterial* mat = scene->mMaterials[mesh->mMaterialIndex - 1];
+		ProcessMaterial(mat, scene);
+	}
+}
+
+void MeshRenderer::ProcessMaterial(aiMaterial * mat, const aiScene * scene)
+{
+	mat->Get(AI_MATKEY_COLOR_DIFFUSE, diffuseColor);
+	mat->Get(AI_MATKEY_COLOR_AMBIENT, ambientColor);
+	mat->Get(AI_MATKEY_COLOR_SPECULAR, specularColor);
 }
 
 void MeshRenderer::setShader(std::shared_ptr<Shader> _pShader)

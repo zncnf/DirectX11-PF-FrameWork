@@ -3,6 +3,7 @@
 
 class Component;
 class Transform;
+class RectTransform;
 
 enum class ObjectType
 {
@@ -31,10 +32,11 @@ public:
 	void AddChild(GameObject* _gameObject);
 
 public:
-	GameObject* gameObject = nullptr;
-	GameObject* parent     = nullptr;
-	Transform* transform   = nullptr;
-	const aiScene* pScene  = nullptr;
+	GameObject* gameObject       = nullptr;
+	GameObject* parent           = nullptr;
+	Transform* transform         = nullptr;
+	RectTransform* rectTransform = nullptr;
+	const aiScene* pScene        = nullptr;
 
 	bool active;
 

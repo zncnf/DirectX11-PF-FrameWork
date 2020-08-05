@@ -19,7 +19,9 @@ public:
 	void Render2D();
 
 public:
+	GameObject* directionalLight;
 	GameObject* camera;
 	GameObject* skull;
+	GameObject* text;
 };
 

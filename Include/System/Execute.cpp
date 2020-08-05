@@ -2,6 +2,9 @@
 #include "Execute.h"
 #include "Component/Camera.h"
 #include "Component/Transform.h"
+#include "Component/RectTransform.h"
+#include "Component/Light.h"
+#include "Component/Text.h"
 
 #include "Shader/DefaultShader_Specular.h"
 
@@ -13,6 +16,8 @@ Execute::~Execute()
 
 void Execute::Init()
 {
+	GameManager::GetInstance()->Init();
+
 	SetShaders();
 	Set3DObject();
 	Set2DObject();
@@ -21,7 +26,7 @@ void Execute::Init()
 void Execute::Update()
 {
 	Render3D();
-	//Render2D();
+	Render2D();
 }
 
 void Execute::SetShaders()
@@ -33,43 +38,42 @@ void Execute::SetShaders()
 
 void Execute::Set3DObject()
 {
+	directionalLight = new GameObject(ObjectType::Empty);
+	directionalLight->AddComponent(new Light(directionalLight, LightType::DirectionalLight));
+	directionalLight->Init();
+
 	camera = new GameObject(ObjectType::Empty);
 	camera->AddComponent(new Camera(camera));
 	camera->Init();
 
-	skull = new GameObject(ObjectType::Object3D, "Resource/GameObject/box.obj");
+	skull = new GameObject(ObjectType::Object3D, "Resource/GameObject/12140_Skull_v3_L2.obj");
 	skull->Init();
+	skull->GetComponent<Transform>()->Rotate(D3DXVECTOR3(90, 0, 0));
 }
 
 void Execute::Set2DObject()
 {
+	text = new GameObject(ObjectType::UI);
+	text->AddComponent(new Text(text, L"궁서", L"12140_Skull_v3_L2.obj", 28, D2D1::ColorF::Gold));
+	text->Init();
+	text->GetComponent<RectTransform>()->SetWorldPosition(D3DXVECTOR3(630, 50, 0));
 }
 
 void Execute::Render3D()
 {
+	directionalLight->Update();
 	camera->Update();
 	skull->Update();
+
+	skull->GetComponent<Transform>()->Rotate(D3DXVECTOR3(0, 1, 0));
 }
 
 void Execute::Render2D()
 {
 	DirectXManager::GetInstance()->GetRenderTarget()->BeginDraw();
-	
-	// DrawText Example
 	{
-		ID2D1SolidColorBrush* pBrush = nullptr;
-		IDWriteTextFormat* pTextFormat = nullptr;
+		text->Update();
 
-		DirectXManager::GetInstance()->GetRenderTarget()->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::White), &pBrush);
-		DirectXManager::GetInstance()->GetWriteFactory()->CreateTextFormat(L"Arial", NULL, DWRITE_FONT_WEIGHT_REGULAR, DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL, 40.0f, L"ko", &pTextFormat);
-
-		pTextFormat->SetWordWrapping(DWRITE_WORD_WRAPPING_NO_WRAP); // 줄바꿈 정렬 사용안함
-
-		DirectXManager::GetInstance()->GetRenderTarget()->DrawTextW(L"Text Sample 1", 15, pTextFormat, D2D1::RectF(0, 0, 100, 100), pBrush);
-
-		ReleaseCOM(pBrush);
-		ReleaseCOM(pTextFormat);
 	}
-
 	DirectXManager::GetInstance()->GetRenderTarget()->EndDraw();
 }

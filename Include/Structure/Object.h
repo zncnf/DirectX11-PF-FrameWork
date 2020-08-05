@@ -3,7 +3,7 @@ class Object
 {
 public:
 	Object() = default;
-	~Object() = default;
+	virtual ~Object() = default;
 
 public:
 	virtual void Init() = 0;

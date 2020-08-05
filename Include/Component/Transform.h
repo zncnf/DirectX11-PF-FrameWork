@@ -13,9 +13,12 @@ public:
 	void Update() override;
 
 public:
-	void Translate(float x, float y, float z);
-	void Rotate(float x, float y, float z);
+	void Translate(D3DXVECTOR3 vec);
+	void Rotate(D3DXVECTOR3 vec);
+	void Scaling(D3DXVECTOR3 vec);
 
+	D3DXVECTOR3 GetWorldPosition();
+	void SetWorldPosition(D3DXVECTOR3 vec);
 public:
 	D3DXVECTOR3 localPosition;
 	D3DXVECTOR3 localRotation;

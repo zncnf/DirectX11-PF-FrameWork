@@ -19,3 +19,8 @@ void GameManager::ReleaseInstance()
 		instance = nullptr;
 	}
 }
+
+void GameManager::Init()
+{
+	drectionalLight = D3DXVECTOR3(0, 0, 0);
+}

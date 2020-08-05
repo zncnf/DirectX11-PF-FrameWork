@@ -93,7 +93,7 @@ void DefaultShader_Specular::Update(D3DXMATRIX world, D3DXMATRIX view, D3DXMATRI
 	ShaderType_Specular* dataPtr2 = (ShaderType_Specular*)mappedResource2.pData;
 	dataPtr2->ambientColor = ambientColor;
 	dataPtr2->diffuseColor = diffuseColor;
-	dataPtr2->lightDirection = D3DXVECTOR3(0.0f, 0.0f, 1.0f);
+	dataPtr2->lightDirection = GameManager::GetInstance()->drectionalLight;
 	dataPtr2->specularColor = specularColor;
 	dataPtr2->specularPower = specularPower;
 

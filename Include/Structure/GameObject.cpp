@@ -4,6 +4,7 @@
 #include "Component/Transform.h"
 #include "Component/MeshFilter.h"
 #include "Component/MeshRenderer.h"
+#include "Component/RectTransform.h"
 
 GameObject::GameObject(ObjectType objectType, const char* filepath)
 {
@@ -13,8 +14,7 @@ GameObject::GameObject(ObjectType objectType, const char* filepath)
 	{
 		active = true;
 		pScene = nullptr;
-		//gameObject = this; need?
-
+		
 		this->AddComponent(new Transform(this));
 	}
 		break;
@@ -25,7 +25,7 @@ GameObject::GameObject(ObjectType objectType, const char* filepath)
 		name = pScene->mRootNode->mName.C_Str();
 
 		this->AddComponent(new Transform(this));
-		this->AddComponent(new MeshRenderer(this, pScene));
+		this->AddComponent(new MeshRenderer(this, pScene, pScene->mRootNode));
 		this->AddComponent(new MeshFilter(this, pScene, pScene->mRootNode));
 
 		for (UINT i = 0; i < pScene->mRootNode->mNumChildren; i++)
@@ -41,7 +41,13 @@ GameObject::GameObject(ObjectType objectType, const char* filepath)
 		break;
 	case ObjectType::UI:
 	{
+		active = true;
+		pScene = nullptr;
+		gameObject = this;
 
+		this->AddComponent(new RectTransform(this));
+
+		rectTransform = GetComponent<RectTransform>();
 	}
 		break;
 	default:
@@ -58,7 +64,7 @@ GameObject::GameObject(aiNode * _node, const aiScene * _pScene)
 	name = _node->mName.C_Str();
 
 	this->AddComponent(new Transform(this));
-	this->AddComponent(new MeshRenderer(this, _pScene));
+	this->AddComponent(new MeshRenderer(this, _pScene, _node));
 	this->AddComponent(new MeshFilter(this, _pScene, _node));
 
 	for (UINT i = 0; i < _node->mNumChildren; i++)
