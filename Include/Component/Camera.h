@@ -1,5 +1,5 @@
 #pragma once
-#include "Component.h"
+#include "Structure/Component.h"
 class Camera : public Component
 {
 public:
@@ -9,5 +9,8 @@ public:
 public:
 	virtual void Init();
 	virtual void Update();
+
+private:
+	void CameraController();
 };
 

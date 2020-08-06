@@ -75,7 +75,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;C:\Users\dpals\Desktop\DirectX 11 Engine\Include\Managers;C:\Users\dpals\Desktop\DirectX 11 Engine\Include\System;C:\Users\dpals\Desktop\DirectX 11 Engine\Include\Structure;C:\Users\dpals\Desktop\DirectX 11 Engine\Include\Component;C:\Users\dpals\Desktop\DirectX 11 Engine\Include\Shader;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;C:\Users\dpals\Desktop\DirectX 11 Engine\Include;$(IncludePath)</IncludePath>
     <ReferencePath>$(ReferencePath)</ReferencePath>
     <LibraryPath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x64;C:\Users\dpals\Desktop\DirectX 11 Engine\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
@@ -108,7 +108,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>D3DUtil.h</PrecompiledHeaderFile>
       <DisableSpecificWarnings>4005;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <AdditionalIncludeDirectories>C:\Users\dpals\Desktop\DirectX 11 Engine\Include;C:\Users\dpals\Desktop\DirectX 11 Engine\Resource\GameObject;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\dpals\Desktop\DirectX 11 Engine\Include;C:\Users\dpals\Desktop\DirectX 11 Engine\Resource\GameObject;C:\Users\dpals\Desktop\DirectX 11 Engine\Include\System;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -171,6 +171,7 @@
     <ClInclude Include="Include\Component\Light.h" />
     <ClInclude Include="Include\Component\Text.h" />
     <ClInclude Include="Include\Component\RectTransform.h" />
+    <ClInclude Include="Include\Managers\InputManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Include\Shader\DefaultShader_Specular.cpp" />
@@ -194,6 +195,7 @@
     <ClCompile Include="Include\Component\Light.cpp" />
     <ClCompile Include="Include\Component\Text.cpp" />
     <ClCompile Include="Include\Component\RectTransform.cpp" />
+    <ClCompile Include="Include\Managers\InputManager.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

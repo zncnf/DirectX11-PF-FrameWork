@@ -10,14 +10,14 @@
 
 Execute::~Execute()
 {
+	delete directionalLight;
 	delete camera;
-	delete skull;
+	delete ironMan;
+	delete text;
 }
 
 void Execute::Init()
 {
-	GameManager::GetInstance()->Init();
-
 	SetShaders();
 	Set3DObject();
 	Set2DObject();
@@ -45,16 +45,16 @@ void Execute::Set3DObject()
 	camera = new GameObject(ObjectType::Empty);
 	camera->AddComponent(new Camera(camera));
 	camera->Init();
+	camera->GetComponent<Transform>()->SetWorldPosition(D3DXVECTOR3(0, 150, -350));
 
-	skull = new GameObject(ObjectType::Object3D, "Resource/GameObject/12140_Skull_v3_L2.obj");
-	skull->Init();
-	skull->GetComponent<Transform>()->Rotate(D3DXVECTOR3(90, 0, 0));
+	ironMan = new GameObject(ObjectType::Object3D, "Resource/GameObject/IronMan/IronMan.obj");
+	ironMan->Init();
 }
 
 void Execute::Set2DObject()
 {
 	text = new GameObject(ObjectType::UI);
-	text->AddComponent(new Text(text, L"±Ã¼­", L"12140_Skull_v3_L2.obj", 28, D2D1::ColorF::Gold));
+	text->AddComponent(new Text(text, L"Arial", L"IronMan.obj", 28, D2D1::ColorF::Gold));
 	text->Init();
 	text->GetComponent<RectTransform>()->SetWorldPosition(D3DXVECTOR3(630, 50, 0));
 }
@@ -63,9 +63,9 @@ void Execute::Render3D()
 {
 	directionalLight->Update();
 	camera->Update();
-	skull->Update();
+	ironMan->Update();
 
-	skull->GetComponent<Transform>()->Rotate(D3DXVECTOR3(0, 1, 0));
+	ironMan->GetComponent<Transform>()->Rotate(D3DXVECTOR3(0, 1, 0));
 }
 
 void Execute::Render2D()
@@ -73,7 +73,6 @@ void Execute::Render2D()
 	DirectXManager::GetInstance()->GetRenderTarget()->BeginDraw();
 	{
 		text->Update();
-
 	}
 	DirectXManager::GetInstance()->GetRenderTarget()->EndDraw();
 }

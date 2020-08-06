@@ -1,5 +1,5 @@
 #pragma once
-#include "Component.h"
+#include "Structure/Component.h"
 #include "Shader/Shader.h"
 class MeshRenderer : public Component
 {

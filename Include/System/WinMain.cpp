@@ -18,6 +18,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE previnstacne, LPSTR ipszCmdPar
 	WindowManager::GetInstance()->SetWindowHeight(static_cast<float>(rect.bottom - rect.top));
 
 	DirectXManager::GetInstance()->Init();
+	GameManager::GetInstance()->Init();
+	InputManager::GetInstance()->Init();
 	#pragma endregion
 
 	Execute* execute = new Execute();
@@ -36,6 +38,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE previnstacne, LPSTR ipszCmdPar
 		{
 			DirectXManager::GetInstance()->BeginDraw();
 			{
+				InputManager::GetInstance()->Update();
 				execute->Update();
 			}
 			DirectXManager::GetInstance()->EndDraww();
@@ -47,6 +50,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE previnstacne, LPSTR ipszCmdPar
 	WindowManager::GetInstance()->ReleaseInstance();
 	DirectXManager::GetInstance()->ReleaseInstance();
 	GameManager::GetInstance()->ReleaseInstance();
+	InputManager::GetInstance()->ReleaseInstance();
 	delete execute;
 	#pragma endregion
 	

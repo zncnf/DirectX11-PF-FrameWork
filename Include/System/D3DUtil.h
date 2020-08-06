@@ -51,10 +51,11 @@
 
 
 #pragma region Managers
-#include "WindowManager.h"
-#include "DirectXManager.h"
+#include "Managers/WindowManager.h"
+#include "Managers/DirectXManager.h"
 #include "Managers/GameManager.h"
 #include "Managers/ResourceManager.h"
+#include "Managers/InputManager.h"
 #pragma endregion
 
 #pragma region Namespace

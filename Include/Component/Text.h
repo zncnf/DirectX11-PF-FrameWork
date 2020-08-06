@@ -1,5 +1,5 @@
 #pragma once
-#include "Component.h"
+#include "Structure/Component.h"
 class Text : public Component
 {
 public:

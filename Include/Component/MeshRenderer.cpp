@@ -23,22 +23,50 @@ void MeshRenderer::Init()
 	if (pShader)
 	{
 		aiString path_astr;
-		std::string path_str;
+		std::string path_Diffuse;
+		std::string path_Specular;
+		std::string path_Normals;
 
 		for (UINT i = 0; i < pScene->mNumMaterials; i++)
 		{
-			pScene->mMaterials[i]->GetTexture(aiTextureType_DIFFUSE, 0, &path_astr);
-			path_str = path_astr.C_Str();
+			if (pScene->mMaterials[i]->GetTexture(aiTextureType_DIFFUSE, 0, &path_astr) == AI_SUCCESS)
+			{
+				path_Diffuse = path_astr.C_Str();
+			}
+			else if (pScene->mMaterials[i]->GetTexture(aiTextureType_SPECULAR, 0, &path_astr) == AI_SUCCESS)
+			{
+				path_Specular = path_astr.C_Str();
+			}
+			else if (pScene->mMaterials[i]->GetTexture(aiTextureType_NORMALS, 0, &path_astr) == AI_SUCCESS)
+			{
+				path_Normals = path_astr.C_Str();
+			}
 
-			if (path_str.length() != 0)
+			if (path_Diffuse.length() != 0)
+				break;
+			else if (path_Specular.length() != 0)
+				break;
+			else if (path_Normals.length() != 0)
 				break;
 		}
 
-		if (path_str.length() != 0)
+		if (path_Diffuse.length() != 0)
 		{
-			path_str = "Resource/GameObject/" + path_str;
+			path_Diffuse = "Resource/GameObject/" + path_Diffuse;
 			pShader->Init();
-			D3DX11CreateShaderResourceViewFromFileA(DirectXManager::GetInstance()->GetDevice(), path_str.c_str(), nullptr, nullptr, &m_ShaderResource, nullptr);
+			D3DX11CreateShaderResourceViewFromFileA(DirectXManager::GetInstance()->GetDevice(), path_Diffuse.c_str(), nullptr, nullptr, &m_ShaderResource, nullptr);
+		}
+		else if (path_Specular.length() != 0)
+		{
+			path_Specular = "Resource/GameObject/" + path_Specular;
+			pShader->Init();
+			D3DX11CreateShaderResourceViewFromFileA(DirectXManager::GetInstance()->GetDevice(), path_Specular.c_str(), nullptr, nullptr, &m_ShaderResource, nullptr);
+		}
+		else if (path_Normals.length() != 0)
+		{
+			path_Normals = "Resource/GameObject/" + path_Normals;
+			pShader->Init();
+			D3DX11CreateShaderResourceViewFromFileA(DirectXManager::GetInstance()->GetDevice(), path_Normals.c_str(), nullptr, nullptr, &m_ShaderResource, nullptr);
 		}
 		else
 		{
@@ -96,7 +124,7 @@ void MeshRenderer::ProcessMesh(aiMesh * mesh, const aiScene * scene)
 {
 	if (mesh->mMaterialIndex >= 0)
 	{
-		aiMaterial* mat = scene->mMaterials[mesh->mMaterialIndex - 1];
+		aiMaterial* mat = scene->mMaterials[mesh->mMaterialIndex];
 		ProcessMaterial(mat, scene);
 	}
 }

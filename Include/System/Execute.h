@@ -21,7 +21,7 @@ public:
 public:
 	GameObject* directionalLight;
 	GameObject* camera;
-	GameObject* skull;
+	GameObject* ironMan;
 	GameObject* text;
 };
 

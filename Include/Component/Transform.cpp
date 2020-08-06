@@ -43,6 +43,15 @@ void Transform::Translate(D3DXVECTOR3 vec)
 	gameObject->transform->worldMatrix._42 = position.y;
 	gameObject->transform->worldMatrix._43 = position.z;
 
+	if (gameObject->parent)
+	{
+		gameObject->transform->localPosition = gameObject->transform->position - gameObject->parent->transform->position;
+	}
+	else
+	{
+		gameObject->transform->localPosition = gameObject->transform->position;
+	}
+
 	for (int i = 0; i < gameObject->childs.size(); i++)
 	{
 		gameObject->childs[i]->transform->Translate(vec);
@@ -100,6 +109,15 @@ void Transform::SetWorldPosition(D3DXVECTOR3 vec)
 	gameObject->transform->worldMatrix._41 = position.x;
 	gameObject->transform->worldMatrix._42 = position.y;
 	gameObject->transform->worldMatrix._43 = position.z;
+
+	if (gameObject->parent)
+	{
+		gameObject->transform->localPosition = gameObject->transform->position - gameObject->parent->transform->position;
+	}
+	else
+	{
+		gameObject->transform->localPosition = gameObject->transform->position;
+	}
 
 	for (int i = 0; i < gameObject->childs.size(); i++)
 	{
