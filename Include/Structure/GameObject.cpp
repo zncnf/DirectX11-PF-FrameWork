@@ -6,7 +6,7 @@
 #include "Component/MeshRenderer.h"
 #include "Component/RectTransform.h"
 
-GameObject::GameObject(ObjectType objectType, const char* filepath)
+GameObject::GameObject(ObjectType objectType, string filepath)
 {
 	switch (objectType)
 	{
@@ -21,16 +21,21 @@ GameObject::GameObject(ObjectType objectType, const char* filepath)
 	case ObjectType::Object3D:
 	{
 		active = true;
-		pScene = aiImportFile(filepath, aiProcess_ConvertToLeftHanded | aiProcess_Triangulate);
+		pScene = aiImportFile(filepath.c_str(), aiProcess_ConvertToLeftHanded | aiProcess_Triangulate);
 		name = pScene->mRootNode->mName.C_Str();
-
+		directory = filepath.substr(0, filepath.find_last_of("/"));		
+		
 		this->AddComponent(new Transform(this));
-		this->AddComponent(new MeshRenderer(this, pScene, pScene->mRootNode));
-		this->AddComponent(new MeshFilter(this, pScene, pScene->mRootNode));
+
+		if (pScene->mRootNode->mNumMeshes > 0)
+		{
+			this->AddComponent(new MeshRenderer(this, pScene, pScene->mRootNode));
+			this->AddComponent(new MeshFilter(this, pScene, pScene->mRootNode));
+		}
 
 		for (UINT i = 0; i < pScene->mRootNode->mNumChildren; i++)
 		{
-			AddChild(new GameObject(pScene->mRootNode->mChildren[i], pScene));
+			AddChild(new GameObject(pScene->mRootNode->mChildren[i], pScene, filepath));
 		}
 	}
 		break;
@@ -43,7 +48,6 @@ GameObject::GameObject(ObjectType objectType, const char* filepath)
 	{
 		active = true;
 		pScene = nullptr;
-		gameObject = this;
 
 		this->AddComponent(new RectTransform(this));
 
@@ -58,14 +62,19 @@ GameObject::GameObject(ObjectType objectType, const char* filepath)
 	}
 }
 
-GameObject::GameObject(aiNode * _node, const aiScene * _pScene)
+GameObject::GameObject(aiNode * _node, const aiScene * _pScene, string filepath)
 {
 	active = true;
 	name = _node->mName.C_Str();
+	directory = filepath.substr(0, filepath.find_last_of("/"));
 
 	this->AddComponent(new Transform(this));
-	this->AddComponent(new MeshRenderer(this, _pScene, _node));
-	this->AddComponent(new MeshFilter(this, _pScene, _node));
+
+	if (_node->mNumMeshes > 0)
+	{
+		this->AddComponent(new MeshRenderer(this, _pScene, _node));
+		this->AddComponent(new MeshFilter(this, _pScene, _node));
+	}
 
 	for (UINT i = 0; i < _node->mNumChildren; i++)
 	{
@@ -96,6 +105,8 @@ GameObject::~GameObject()
 		delete child;
 	}
 	childs.clear();
+
+	aiReleaseImport(pScene);
 }
 
 void GameObject::Init()
@@ -140,3 +151,4 @@ void GameObject::AddChild(GameObject * _gameObject)
 	childs.push_back(_gameObject);
 	_gameObject->parent = this;
 }
+

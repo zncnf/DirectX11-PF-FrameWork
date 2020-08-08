@@ -6,10 +6,6 @@ MeshFilter::MeshFilter(GameObject * _object, const aiScene * _pScene, aiNode * _
 	gameObject = _object;
 	pScene	   = _pScene;
 	node       = _node;
-
-	vertexCount = 0;
-	indexCount	= 0;
-	offset		= 0;
 }
 
 MeshFilter::~MeshFilter()
@@ -20,16 +16,10 @@ MeshFilter::~MeshFilter()
 
 void MeshFilter::Init()
 {
-	for (UINT i = 0; i < node->mNumMeshes; i++)
-	{
-		vertexCount += pScene->mMeshes[node->mMeshes[i]]->mNumVertices;
-		indexCount  += pScene->mMeshes[node->mMeshes[i]]->mNumFaces * 3;
-	}
+	ProcessNode(node, pScene);
 
 	vertices = new VertexType_PTN[vertexCount];
-	indices  = new UINT[indexCount];
-
-	ProcessNode(node, pScene);
+	indices = new UINT[indexCount];
 
 	for (int i = 0; i < _vertices.size(); i++)
 	{
@@ -95,13 +85,25 @@ void MeshFilter::ProcessNode(aiNode * node, const aiScene * scene)
 {
 	for (UINT i = 0; i < node->mNumMeshes; i++)
 	{
-		aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-		ProcessMesh(mesh, scene);
+		if (ResourceManager::GetInstance()->GetMesh(scene->mMeshes[node->mMeshes[i]]->mName.C_Str()))
+		{
+			pMesh = ResourceManager::GetInstance()->GetMesh(scene->mMeshes[node->mMeshes[i]]->mName.C_Str());
+		}
+		else
+		{
+			pMesh = scene->mMeshes[node->mMeshes[i]];
+			ResourceManager::GetInstance()->AddMesh(pMesh->mName.C_Str(), pMesh);
+		}
+
+		ProcessMesh(pMesh, scene);
 	}
 }
 
 void MeshFilter::ProcessMesh(aiMesh * mesh, const aiScene * scene)
 {
+	vertexCount += mesh->mNumVertices;
+	indexCount += mesh->mNumFaces * 3;
+
 	for (UINT i = 0; i < mesh->mNumVertices; i++)
 	{
 		VertexType_PTN vertex;
@@ -135,3 +137,4 @@ void MeshFilter::ProcessMesh(aiMesh * mesh, const aiScene * scene)
 
 	offset += mesh->mNumVertices;
 }
+

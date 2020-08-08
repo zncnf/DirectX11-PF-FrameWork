@@ -1,5 +1,6 @@
 #pragma once
 #include "Structure/Component.h"
+
 class MeshFilter : public Component
 {
 public:
@@ -14,15 +15,18 @@ public:
 	void ProcessNode(aiNode* node, const aiScene* scene);
 	void ProcessMesh(aiMesh* mesh, const aiScene* scene);
 
+public:
+	std::shared_ptr<Mesh> mesh = nullptr;
+
 private:
 	const aiScene* pScene = nullptr;
-	const aiMesh* pMesh   = nullptr;
+	aiMesh*  pMesh        = nullptr;
 	const aiFace* pFace   = nullptr;
-	aiNode* node		  = nullptr;
+	aiNode* node = nullptr;
 	aiMaterial* pMaterial = nullptr;
 
 	ID3D11Buffer* vertexBuffer = nullptr;
-	ID3D11Buffer* indexBuffer  = nullptr;
+	ID3D11Buffer* indexBuffer = nullptr;
 
 	UINT indexCount;
 	UINT vertexCount;

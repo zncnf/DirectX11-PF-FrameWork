@@ -8,9 +8,7 @@ MeshRenderer::MeshRenderer(GameObject * _object, const aiScene * _pScene, aiNode
 	pScene     = _pScene;
 	node       = _node;
 
-	pShader = ResourceManager::GetInstance()->getShader("DefaultShader_Specular");
-
-	ProcessNode(node, pScene);
+	pShader = ResourceManager::GetInstance()->GetShader("DefaultShader_Specular");
 }
 
 MeshRenderer::~MeshRenderer()
@@ -22,57 +20,7 @@ void MeshRenderer::Init()
 {
 	if (pShader)
 	{
-		aiString path_astr;
-		std::string path_Diffuse;
-		std::string path_Specular;
-		std::string path_Normals;
-
-		for (UINT i = 0; i < pScene->mNumMaterials; i++)
-		{
-			if (pScene->mMaterials[i]->GetTexture(aiTextureType_DIFFUSE, 0, &path_astr) == AI_SUCCESS)
-			{
-				path_Diffuse = path_astr.C_Str();
-			}
-			else if (pScene->mMaterials[i]->GetTexture(aiTextureType_SPECULAR, 0, &path_astr) == AI_SUCCESS)
-			{
-				path_Specular = path_astr.C_Str();
-			}
-			else if (pScene->mMaterials[i]->GetTexture(aiTextureType_NORMALS, 0, &path_astr) == AI_SUCCESS)
-			{
-				path_Normals = path_astr.C_Str();
-			}
-
-			if (path_Diffuse.length() != 0)
-				break;
-			else if (path_Specular.length() != 0)
-				break;
-			else if (path_Normals.length() != 0)
-				break;
-		}
-
-		if (path_Diffuse.length() != 0)
-		{
-			path_Diffuse = "Resource/GameObject/" + path_Diffuse;
-			pShader->Init();
-			D3DX11CreateShaderResourceViewFromFileA(DirectXManager::GetInstance()->GetDevice(), path_Diffuse.c_str(), nullptr, nullptr, &m_ShaderResource, nullptr);
-		}
-		else if (path_Specular.length() != 0)
-		{
-			path_Specular = "Resource/GameObject/" + path_Specular;
-			pShader->Init();
-			D3DX11CreateShaderResourceViewFromFileA(DirectXManager::GetInstance()->GetDevice(), path_Specular.c_str(), nullptr, nullptr, &m_ShaderResource, nullptr);
-		}
-		else if (path_Normals.length() != 0)
-		{
-			path_Normals = "Resource/GameObject/" + path_Normals;
-			pShader->Init();
-			D3DX11CreateShaderResourceViewFromFileA(DirectXManager::GetInstance()->GetDevice(), path_Normals.c_str(), nullptr, nullptr, &m_ShaderResource, nullptr);
-		}
-		else
-		{
-			pShader->Init();
-			D3DX11CreateShaderResourceViewFromFileA(DirectXManager::GetInstance()->GetDevice(), "Resource/GameObject/box.jpg", nullptr, nullptr, &m_ShaderResource, nullptr);
-		}
+		ProcessNode(node, pScene);
 
 		D3D11_SAMPLER_DESC desc;
 		ZeroMemory(&desc, sizeof(D3D11_SAMPLER_DESC));
@@ -124,8 +72,22 @@ void MeshRenderer::ProcessMesh(aiMesh * mesh, const aiScene * scene)
 {
 	if (mesh->mMaterialIndex >= 0)
 	{
-		aiMaterial* mat = scene->mMaterials[mesh->mMaterialIndex];
-		ProcessMaterial(mat, scene);
+		aiString matName;
+
+		pMaterial = scene->mMaterials[mesh->mMaterialIndex];
+		pMaterial->Get(AI_MATKEY_NAME, matName);
+
+		if (ResourceManager::GetInstance()->GetMaterial(matName.C_Str()))
+		{
+			pMaterial = ResourceManager::GetInstance()->GetMaterial(matName.C_Str());
+		}
+		else
+		{
+			pMaterial = scene->mMaterials[mesh->mMaterialIndex];
+			ResourceManager::GetInstance()->AddMaterial(matName.C_Str(), pMaterial);
+		}
+
+		ProcessMaterial(pMaterial, scene);
 	}
 }
 
@@ -134,14 +96,31 @@ void MeshRenderer::ProcessMaterial(aiMaterial * mat, const aiScene * scene)
 	mat->Get(AI_MATKEY_COLOR_DIFFUSE, diffuseColor);
 	mat->Get(AI_MATKEY_COLOR_AMBIENT, ambientColor);
 	mat->Get(AI_MATKEY_COLOR_SPECULAR, specularColor);
+
+	for (UINT i = 0; i < mat->GetTextureCount(aiTextureType_DIFFUSE); i++)
+	{
+		aiString str;
+		string path_texture;
+		mat->GetTexture(aiTextureType_DIFFUSE, i, &str);
+
+		path_texture = string(str.C_Str());
+		path_texture = gameObject->directory + '/' + path_texture;
+
+		D3DX11CreateShaderResourceViewFromFileA(DirectXManager::GetInstance()->GetDevice(), path_texture.c_str(), nullptr, nullptr, &m_ShaderResource, nullptr);
+	}
 }
 
-void MeshRenderer::setShader(std::shared_ptr<Shader> _pShader)
+void MeshRenderer::SetShader(std::shared_ptr<Shader> _pShader)
 {
 	pShader = _pShader;
 }
 
-std::shared_ptr<Shader> MeshRenderer::getShader()
+void MeshRenderer::SetTexturePath(string path)
+{
+	D3DX11CreateShaderResourceViewFromFileA(DirectXManager::GetInstance()->GetDevice(), path.c_str(), nullptr, nullptr, &m_ShaderResource, nullptr);
+}
+
+std::shared_ptr<Shader> MeshRenderer::GetShader()
 {
 	return pShader;
 }

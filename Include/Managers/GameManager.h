@@ -1,4 +1,7 @@
 #pragma once
+
+class GameObject;
+
 class GameManager
 {
 private:
@@ -14,6 +17,8 @@ public:
 public:
 	void Init();
 
+public:
+	void ShowHierarchy(GameObject* _object);
 public:
 	D3DXMATRIX worldMatrix;
 	D3DXMATRIX viewMatrix;

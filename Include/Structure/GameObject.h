@@ -16,8 +16,8 @@ enum class ObjectType
 class GameObject : public Object
 {
 public:
-	GameObject(ObjectType _objectType, const char* filepath = "");
-	GameObject(aiNode* _node, const aiScene* _pScene);
+	GameObject(ObjectType _objectType, string filepath = "");
+	GameObject(aiNode* _node, const aiScene* _pScene, string filepath = "");
 	virtual ~GameObject();
 
 public:
@@ -28,9 +28,10 @@ public:
 	void AddComponent(Component* _component);
 	template<typename T>
 	T* GetComponent();
+	template<typename T>
+	vector<GameObject*> GetComponentsInChildren();
 
 	void AddChild(GameObject* _gameObject);
-
 public:
 	GameObject* gameObject       = nullptr;
 	GameObject* parent           = nullptr;
@@ -39,6 +40,7 @@ public:
 	const aiScene* pScene        = nullptr;
 
 	bool active;
+	string directory;
 
 	std::vector<GameObject*> childs;
 	std::vector<Component*> components;
@@ -56,4 +58,20 @@ inline T * GameObject::GetComponent()
 	}
 
 	return nullptr;
+}
+
+template<typename T>
+inline vector<GameObject*> GameObject::GetComponentsInChildren()
+{
+	vector<GameObject*> rChilds;
+
+	for (auto i : this->childs)
+	{
+		if (i->GetComponent<T>())
+		{
+			rChilds.push_back(i);
+		}
+	}
+
+	return rChilds;
 }

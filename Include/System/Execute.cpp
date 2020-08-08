@@ -3,6 +3,8 @@
 #include "Component/Camera.h"
 #include "Component/Transform.h"
 #include "Component/RectTransform.h"
+#include "Component/MeshFilter.h"
+#include "Component/MeshRenderer.h"
 #include "Component/Light.h"
 #include "Component/Text.h"
 
@@ -12,7 +14,7 @@ Execute::~Execute()
 {
 	delete directionalLight;
 	delete camera;
-	delete ironMan;
+	delete crusaderKnight;
 	delete text;
 }
 
@@ -33,7 +35,9 @@ void Execute::SetShaders()
 {
 	shared_ptr<Shader> shader_Specular(new DefaultShader_Specular);
 
-	ResourceManager::GetInstance()->addShader("DefaultShader_Specular", shader_Specular);
+	shader_Specular->Init();
+
+	ResourceManager::GetInstance()->AddShader("DefaultShader_Specular", shader_Specular);
 }
 
 void Execute::Set3DObject()
@@ -47,14 +51,21 @@ void Execute::Set3DObject()
 	camera->Init();
 	camera->GetComponent<Transform>()->SetWorldPosition(D3DXVECTOR3(0, 150, -350));
 
-	ironMan = new GameObject(ObjectType::Object3D, "Resource/GameObject/IronMan/IronMan.obj");
-	ironMan->Init();
+	crusaderKnight = new GameObject(ObjectType::Object3D, "Resource/GameObject/Crusader knight/animation/crusader@atack1.fbx");
+	crusaderKnight->Init();
+
+	crusaderKnight->childs[0]->childs[0]->childs[0]->childs[0]->GetComponent<MeshRenderer>()->SetTexturePath("Resource/GameObject/Crusader knight/textures/mech_Albedo.png");
+
+	for (auto i : crusaderKnight->childs[1]->childs[0]->childs)
+	{
+		i->childs[0]->GetComponent<MeshRenderer>()->SetTexturePath("Resource/GameObject/Crusader knight/textures/crusader body_Albedopng.png");
+	}
 }
 
 void Execute::Set2DObject()
 {
 	text = new GameObject(ObjectType::UI);
-	text->AddComponent(new Text(text, L"Arial", L"IronMan.obj", 28, D2D1::ColorF::Gold));
+	text->AddComponent(new Text(text, L"Arial", L"crusader base mesh.fbx", 28, D2D1::ColorF::Gold));
 	text->Init();
 	text->GetComponent<RectTransform>()->SetWorldPosition(D3DXVECTOR3(630, 50, 0));
 }
@@ -63,9 +74,9 @@ void Execute::Render3D()
 {
 	directionalLight->Update();
 	camera->Update();
-	ironMan->Update();
+	crusaderKnight->Update();
 
-	ironMan->GetComponent<Transform>()->Rotate(D3DXVECTOR3(0, 1, 0));
+	crusaderKnight->GetComponent<Transform>()->Rotate(D3DXVECTOR3(0, 1, 0));
 }
 
 void Execute::Render2D()

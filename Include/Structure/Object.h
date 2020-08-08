@@ -10,6 +10,6 @@ public:
 	virtual void Update() = 0;
 
 public:
-	string name;
+	std::string name;
 };
 

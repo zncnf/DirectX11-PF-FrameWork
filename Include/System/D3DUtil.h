@@ -45,6 +45,7 @@
 #include "assimp/cimport.h"
 #include "assimp/postprocess.h"
 #include "assimp/scene.h"
+#include "assimp/pbrmaterial.h"
 
 #pragma comment(lib, "assimp-vc140-mt.lib")
 #pragma endregion
