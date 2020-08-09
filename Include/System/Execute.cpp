@@ -5,8 +5,10 @@
 #include "Component/RectTransform.h"
 #include "Component/MeshFilter.h"
 #include "Component/MeshRenderer.h"
+#include "Component/SkinnedMeshRenderer.h"
 #include "Component/Light.h"
 #include "Component/Text.h"
+#include "Component/Image.h"
 
 #include "Shader/DefaultShader_Specular.h"
 
@@ -15,7 +17,9 @@ Execute::~Execute()
 	delete directionalLight;
 	delete camera;
 	delete crusaderKnight;
-	delete text;
+	delete fps;
+	delete mspf;
+	delete gameTime;
 }
 
 void Execute::Init()
@@ -54,20 +58,31 @@ void Execute::Set3DObject()
 	crusaderKnight = new GameObject(ObjectType::Object3D, "Resource/GameObject/Crusader knight/animation/crusader@atack1.fbx");
 	crusaderKnight->Init();
 
-	crusaderKnight->childs[0]->childs[0]->childs[0]->childs[0]->GetComponent<MeshRenderer>()->SetTexturePath("Resource/GameObject/Crusader knight/textures/mech_Albedo.png");
+	crusaderKnight->childs[0]->childs[0]->childs[0]->childs[0]->GetComponent<SkinnedMeshRenderer>()->SetTexturePath("Resource/GameObject/Crusader knight/textures/mech_Albedo.png");
 
 	for (auto i : crusaderKnight->childs[1]->childs[0]->childs)
 	{
-		i->childs[0]->GetComponent<MeshRenderer>()->SetTexturePath("Resource/GameObject/Crusader knight/textures/crusader body_Albedopng.png");
-	}
+		i->childs[0]->GetComponent<SkinnedMeshRenderer>()->SetTexturePath("Resource/GameObject/Crusader knight/textures/crusader body_Albedopng.png");
+	}	
 }
 
 void Execute::Set2DObject()
 {
-	text = new GameObject(ObjectType::UI);
-	text->AddComponent(new Text(text, L"Arial", L"crusader base mesh.fbx", 28, D2D1::ColorF::Gold));
-	text->Init();
-	text->GetComponent<RectTransform>()->SetWorldPosition(D3DXVECTOR3(630, 50, 0));
+	fps = new GameObject(ObjectType::UI);
+	fps->AddComponent(new Text(fps, L"Arial", L"FPS : ", 25, D2D1::ColorF::Gold));
+	fps->Init();
+	fps->GetComponent<RectTransform>()->SetWorldPosition(D3DXVECTOR3(55, 30, 0));
+
+	mspf = new GameObject(ObjectType::UI);
+	mspf->AddComponent(new Text(mspf, L"Arial", L"Frame Time : ", 25, D2D1::ColorF::Gold));
+	mspf->Init();
+	mspf->GetComponent<RectTransform>()->SetWorldPosition(D3DXVECTOR3(55, 55, 0));
+
+
+	gameTime = new GameObject(ObjectType::UI);
+	gameTime->AddComponent(new Text(gameTime, L"Arial", L"Game Time : ", 25, D2D1::ColorF::Gold));
+	gameTime->Init();
+	gameTime->GetComponent<RectTransform>()->SetWorldPosition(D3DXVECTOR3(55, 80, 0));
 }
 
 void Execute::Render3D()
@@ -83,7 +98,26 @@ void Execute::Render2D()
 {
 	DirectXManager::GetInstance()->GetRenderTarget()->BeginDraw();
 	{
-		text->Update();
+		std::wstring str;
+		wchar_t* str_;
+
+		str = L"FPS : " + std::to_wstring(GameManager::GetInstance()->fps);
+		str_ = const_cast<wchar_t*>(str.c_str());
+
+		fps->GetComponent<Text>()->SetText(str_);
+		fps->Update();
+
+		str = L"Frame Time : " + std::to_wstring(GameManager::GetInstance()->mspf);
+		str_ = const_cast<wchar_t*>(str.c_str());
+
+		mspf->GetComponent<Text>()->SetText(str_);
+		mspf->Update();
+
+		str = L"Game Time : " + std::to_wstring(GameManager::GetInstance()->gameTime);
+		str_ = const_cast<wchar_t*>(str.c_str());
+
+		gameTime->GetComponent<Text>()->SetText(str_);
+		gameTime->Update();
 	}
 	DirectXManager::GetInstance()->GetRenderTarget()->EndDraw();
 }

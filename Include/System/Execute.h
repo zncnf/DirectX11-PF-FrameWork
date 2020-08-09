@@ -22,6 +22,8 @@ public:
 	GameObject* directionalLight;
 	GameObject* camera;
 	GameObject* crusaderKnight;
-	GameObject* text;
+	GameObject* fps;
+	GameObject* mspf;
+	GameObject* gameTime;
 };
 

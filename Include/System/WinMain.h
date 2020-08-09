@@ -1,4 +1,5 @@
 #pragma once
+#include "GameTimer.h"
 
 static HINSTANCE g_instance;
 static HWND      g_handle;
@@ -7,7 +8,38 @@ inline LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM l
 {
 	switch (message)
 	{
+	case WM_ACTIVATE:
+	{
+		if (LOWORD(wParam) == WA_INACTIVE)
+		{
+			if (!GameManager::GetInstance()->gameTimer)
+				GameManager::GetInstance()->Init();
+			GameManager::GetInstance()->gameTimer->Stop();
+		}
+		else
+		{
+			if (!GameManager::GetInstance()->gameTimer)
+				GameManager::GetInstance()->Init();
+			GameManager::GetInstance()->gameTimer->Start();
+		}
+		return 0;
+	}
+		break;
+	case WM_ENTERSIZEMOVE:
+	{
+		GameManager::GetInstance()->gameTimer->Stop();
+		return 0;
+	}
+		break;
+	case WM_EXITSIZEMOVE:
+	{
+		GameManager::GetInstance()->gameTimer->Start();
+		return 0;
+	}
+		break;
 	case WM_CLOSE:
+		PostQuitMessage(0);
+		break;
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		break;

@@ -7,6 +7,7 @@ Text::Text(GameObject * _object, const WCHAR* fontname, WCHAR* sentence, float f
 	gameObject  = _object;
 	wszText     = sentence;
 	fontName    = fontname;
+	fontSize	= fontsize;
 	cTextLength = (UINT32)wcslen(wszText);
 
 	DirectXManager::GetInstance()->GetRenderTarget()->CreateSolidColorBrush(D2D1::ColorF(color), &pBrush);
@@ -20,10 +21,10 @@ Text::~Text()
 
 void Text::Init()
 {
-	DirectXManager::GetInstance()->GetWriteFactory()->CreateTextFormat(fontName, NULL, DWRITE_FONT_WEIGHT_REGULAR, DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL, 40.0f, L"ko", &pTextFormat);
+	DirectXManager::GetInstance()->GetWriteFactory()->CreateTextFormat(fontName, NULL, DWRITE_FONT_WEIGHT_REGULAR, DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL, fontSize, L"ko", &pTextFormat);
 
 	// 텍스트를 왼쪽, 오른쪽, 중간을 기준으로 정렬한다.
-	pTextFormat->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_CENTER);
+	pTextFormat->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_LEADING);
 
 	// 텍스트를 위쪽, 아래쪽, 중간을 기준으로 정렬한다.
 	pTextFormat->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_CENTER);
@@ -49,6 +50,12 @@ void Text::Update()
 void Text::SetColor(D2D1::ColorF color)
 {
 	DirectXManager::GetInstance()->GetRenderTarget()->CreateSolidColorBrush(D2D1::ColorF(color), &pBrush);
+}
+
+void Text::SetText(WCHAR * text)
+{
+	wszText = text;
+	cTextLength = (UINT32)wcslen(wszText);
 }
 
 void Text::ShowRectForDebug()

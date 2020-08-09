@@ -7,6 +7,7 @@
 
 #pragma region C/C++ Librarys
 #include <Windows.h>
+//#include <wincodec.h> DirectX SDK와 호환이안되는문제
 
 #include <iostream>
 #include <string>

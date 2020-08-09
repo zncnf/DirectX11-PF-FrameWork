@@ -11,12 +11,9 @@ public:
 	virtual void Init() override;
 	virtual void Update() override;
 
-public:
+private:
 	void ProcessNode(aiNode* node, const aiScene* scene);
 	void ProcessMesh(aiMesh* mesh, const aiScene* scene);
-
-public:
-	std::shared_ptr<Mesh> mesh = nullptr;
 
 private:
 	const aiScene* pScene = nullptr;

@@ -5,6 +5,7 @@
 #include "Component/MeshFilter.h"
 #include "Component/MeshRenderer.h"
 #include "Component/RectTransform.h"
+#include "Component/SkinnedMeshRenderer.h"
 
 GameObject::GameObject(ObjectType objectType, string filepath)
 {
@@ -29,8 +30,15 @@ GameObject::GameObject(ObjectType objectType, string filepath)
 
 		if (pScene->mRootNode->mNumMeshes > 0)
 		{
-			this->AddComponent(new MeshRenderer(this, pScene, pScene->mRootNode));
-			this->AddComponent(new MeshFilter(this, pScene, pScene->mRootNode));
+			if (pScene->HasAnimations())
+			{
+				this->AddComponent(new SkinnedMeshRenderer(this, pScene, pScene->mRootNode));
+			}
+			else
+			{
+				this->AddComponent(new MeshRenderer(this, pScene, pScene->mRootNode));
+				this->AddComponent(new MeshFilter(this, pScene, pScene->mRootNode));
+			}
 		}
 
 		for (UINT i = 0; i < pScene->mRootNode->mNumChildren; i++)
@@ -72,8 +80,15 @@ GameObject::GameObject(aiNode * _node, const aiScene * _pScene, string filepath)
 
 	if (_node->mNumMeshes > 0)
 	{
-		this->AddComponent(new MeshRenderer(this, _pScene, _node));
-		this->AddComponent(new MeshFilter(this, _pScene, _node));
+		if (_pScene->HasAnimations())
+		{
+			this->AddComponent(new SkinnedMeshRenderer(this, _pScene, _node));
+		}
+		else
+		{
+			this->AddComponent(new MeshRenderer(this, _pScene, _node));
+			this->AddComponent(new MeshFilter(this, _pScene, _node));
+		}
 	}
 
 	for (UINT i = 0; i < _node->mNumChildren; i++)

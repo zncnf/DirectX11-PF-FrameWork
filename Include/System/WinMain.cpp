@@ -1,6 +1,5 @@
 #include "D3DUtil.h"
 #include "WinMain.h"
-
 #include "Execute.h"
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE previnstacne, LPSTR ipszCmdParam, int nCmdShow)
@@ -18,7 +17,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE previnstacne, LPSTR ipszCmdPar
 	WindowManager::GetInstance()->SetWindowHeight(static_cast<float>(rect.bottom - rect.top));
 
 	DirectXManager::GetInstance()->Init();
-	GameManager::GetInstance()->Init();
 	InputManager::GetInstance()->Init();
 	#pragma endregion
 
@@ -27,6 +25,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE previnstacne, LPSTR ipszCmdPar
 
 	#pragma region Update
 	MSG msg = { 0 };
+
 	while (msg.message != WM_QUIT)
 	{
 		if (PeekMessage(&msg, 0, 0, 0, PM_REMOVE))
@@ -39,6 +38,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE previnstacne, LPSTR ipszCmdPar
 			DirectXManager::GetInstance()->BeginDraw();
 			{
 				InputManager::GetInstance()->Update();
+				GameManager::GetInstance()->Update();
 				execute->Update();
 			}
 			DirectXManager::GetInstance()->EndDraww();

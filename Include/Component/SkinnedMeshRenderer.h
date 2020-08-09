@@ -1,15 +1,15 @@
 #pragma once
 #include "Structure/Component.h"
-#include "Shader/Shader.h"
 
-class MeshRenderer : public Component
+class SkinnedMeshRenderer : public Component
 {
 public:
-	MeshRenderer(GameObject* _object, const aiScene* _pScene, aiNode* _node);
-	virtual ~MeshRenderer();
+	SkinnedMeshRenderer(GameObject* _object, const aiScene* _pScene, aiNode* _node);
+	virtual ~SkinnedMeshRenderer();
+
 public:
-	void Init() override;
-	void Update() override;
+	virtual void Init() override;
+	virtual void Update() override;
 
 private:
 	void ProcessNode(aiNode* node, const aiScene* scene);
@@ -20,6 +20,7 @@ public:
 	void SetShader(std::shared_ptr<Shader> _pShader);
 	void SetTexturePath(string path);
 	std::shared_ptr<Shader> GetShader();
+
 public:
 	std::shared_ptr<Shader> pShader;
 
@@ -28,10 +29,27 @@ public:
 	aiColor4D specularColor;
 
 	aiMaterial* pMaterial;
+
 private:
 	const aiScene* pScene = nullptr;
+	aiMesh*  pMesh = nullptr;
+	const aiFace* pFace = nullptr;
 	aiNode* node = nullptr;
 
+	ID3D11Buffer* vertexBuffer = nullptr;
+	ID3D11Buffer* indexBuffer = nullptr;
+
+	UINT indexCount;
+	UINT vertexCount;
+
+	std::vector<VertexType_PTN> _vertices;
+	std::vector<DWORD> _indices;
+
+	VertexType_PTN* vertices;
+	UINT* indices;
+
+	UINT offset;
+private:
 	ID3D11ShaderResourceView* m_ShaderResource = nullptr;
 	ID3D11SamplerState*	m_SampleState = nullptr;
 };

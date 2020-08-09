@@ -1,6 +1,7 @@
 #pragma once
 
 class GameObject;
+class GameTimer;
 
 class GameManager
 {
@@ -16,6 +17,7 @@ public:
 
 public:
 	void Init();
+	void Update();
 
 public:
 	void ShowHierarchy(GameObject* _object);
@@ -31,5 +33,11 @@ public:
 	D3DXVECTOR3 camera_Lookat;
 
 	D3DXVECTOR3 drectionalLight;
+
+	float fps;
+	float mspf;
+	float gameTime;
+
+	GameTimer* gameTimer;
 };
 

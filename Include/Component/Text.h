@@ -12,15 +12,19 @@ public:
 	
 public:
 	void SetColor(D2D1::ColorF color);
+	void SetText(WCHAR* text);
 
 	void ShowRectForDebug();
 	void OnDebugRect();
 	void OffDebugRect();
 
+
+
 private:
 	WCHAR*  wszText;
 	const WCHAR* fontName;
 	UINT32    cTextLength;
+	float fontSize; 
 	IDWriteTextFormat*    pTextFormat = nullptr;
 	ID2D1SolidColorBrush* pBrush = nullptr;
 
