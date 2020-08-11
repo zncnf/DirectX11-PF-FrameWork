@@ -14,6 +14,7 @@ public:
 private:
 	void ProcessNode(aiNode* node, const aiScene* scene);
 	void ProcessMesh(aiMesh* mesh, const aiScene* scene);
+	void ProcessBone(aiMesh* mesh, const aiScene* scene);
 	void ProcessMaterial(aiMaterial* mat, const aiScene* scene);
 
 public:
@@ -41,11 +42,17 @@ private:
 
 	UINT indexCount;
 	UINT vertexCount;
+	UINT boneCount;
 
-	std::vector<VertexType_PTN> _vertices;
+	std::vector<VertexType_SkindMesh> _vertices;
+	std::vector<VertexBoneData> _bones;
 	std::vector<DWORD> _indices;
 
-	VertexType_PTN* vertices;
+	std::vector<SkinDrawData> skinDrawData;
+	std::vector<BoneInfo> boneInfo;
+	std::map<std::string, UINT> boneMapping;
+
+	VertexType_SkindMesh* vertices;
 	UINT* indices;
 
 	UINT offset;

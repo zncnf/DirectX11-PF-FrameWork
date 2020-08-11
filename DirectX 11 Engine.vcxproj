@@ -152,6 +152,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Include\Asset\AnimationClip.h" />
+    <ClInclude Include="Include\Shader\DefaultShader_Skinned.h" />
     <ClInclude Include="Include\System\GameTimer.h" />
     <ClInclude Include="Include\Component\Animator.h" />
     <ClInclude Include="Include\Component\Image.h" />
@@ -178,6 +180,8 @@
     <ClInclude Include="Include\Component\SkinnedMeshRenderer.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Include\Asset\AnimationClip.cpp" />
+    <ClCompile Include="Include\Shader\DefaultShader_Skinned.cpp" />
     <ClCompile Include="Include\System\GameTimer.cpp" />
     <ClCompile Include="Include\Component\Animator.cpp" />
     <ClCompile Include="Include\Component\Image.cpp" />

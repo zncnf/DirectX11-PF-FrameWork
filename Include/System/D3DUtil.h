@@ -2,6 +2,7 @@
 #pragma comment(linker, "/entry:WinMainCRTStartup /subsystem:console")
 
 #define NOMINMAX
+#define NUM_BONES_PER_VERTEX 4
 
 // 미리컴파일된 헤더(Precompiled Headers)를 사용하는 모든 cpp파일에 추가시켜주면 됩니다.
 
@@ -68,6 +69,8 @@ using namespace std;
 #define ReleaseCOM(x)      { if(x){ x->Release(); x = nullptr; } }
 #define SafeDelete(x)      { delete x; x = nullptr; }
 #define SafeDeleteArray(x) { if(x) { delete[] (x); (x) = nullptr; } }
+#define ZEROMEM(x)		    memset(x, 0, sizeof(x)) 
+#define ARRAY_SIZE_IN_ELEMENTS(x) (sizeof(x)/sizeof(x[0]))
 #pragma endregion
 
 #pragma region Structs
@@ -82,6 +85,27 @@ struct CBuffer_Camera
 {
 	D3DXVECTOR3 cameraPosition;
 	float		padding;
+};
+
+struct Cbuffer_BoneData
+{
+	D3DXMATRIX bones[100];
+};
+
+struct VertexType_SkindMesh
+{
+	D3DXVECTOR3 position;
+	D3DXVECTOR2 texture;
+	D3DXVECTOR3 normal;
+	UINT boneID[NUM_BONES_PER_VERTEX];
+	float weights[NUM_BONES_PER_VERTEX];
+};
+
+struct SkinDrawData
+{
+	UINT vertexCount;
+	UINT idicesCount;
+	UINT vertexBaseStart;
 };
 
 struct VertexType_PTN
@@ -100,6 +124,56 @@ struct ShaderType_Specular
 	D3DXVECTOR4 specularColor;
 };
 #pragma endregion
+
+
+struct BoneInfo
+{
+	aiMatrix4x4 boneOffset;
+	aiMatrix4x4 finalTransformation;
+
+	BoneInfo()
+	{
+		for (int i = 0; i < 4; ++i)
+		{
+			for (int j = 0; j < 4; ++j)
+			{
+				boneOffset[i][j] = 0.0f;
+				finalTransformation[i][j] = 0.0f;
+			}
+		}
+	}
+};
+
+struct VertexBoneData
+{
+	UINT Ids[NUM_BONES_PER_VERTEX];
+	float Weights[NUM_BONES_PER_VERTEX];
+
+	VertexBoneData()
+	{
+		Reset();
+	}
+
+	void Reset()
+	{
+		ZEROMEM(Ids);
+		ZEROMEM(Weights);
+	}
+
+	void AddBoneData(UINT boneID, float weight)
+	{
+		for (UINT i = 0; i < ARRAY_SIZE_IN_ELEMENTS(Ids); i++)
+		{
+			if (Weights[i] = 0.0)
+			{
+				Ids[i] = boneID;
+				Weights[i] = weight;
+				return;
+			}
+		}
+	}
+};
+
 
 
 

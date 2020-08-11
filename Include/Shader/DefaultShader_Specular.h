@@ -21,6 +21,5 @@ private:
 
 	ID3D11ShaderResourceView* shaderResource = nullptr;
 	ID3D11SamplerState* 	  sampleState    = nullptr;
-
 };
 

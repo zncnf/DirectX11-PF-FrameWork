@@ -9,8 +9,12 @@
 #include "Component/Light.h"
 #include "Component/Text.h"
 #include "Component/Image.h"
+#include "Component/Animator.h"
 
 #include "Shader/DefaultShader_Specular.h"
+#include "Shader/DefaultShader_Skinned.h"
+
+#include "Asset/AnimationClip.h"
 
 Execute::~Execute()
 {
@@ -38,10 +42,13 @@ void Execute::Update()
 void Execute::SetShaders()
 {
 	shared_ptr<Shader> shader_Specular(new DefaultShader_Specular);
+	shared_ptr<Shader> shader_Skinned(new DefaultShader_Skinned);
 
 	shader_Specular->Init();
+	shader_Skinned->Init();
 
 	ResourceManager::GetInstance()->AddShader("DefaultShader_Specular", shader_Specular);
+	ResourceManager::GetInstance()->AddShader("DefaultShader_Skinned", shader_Skinned);
 }
 
 void Execute::Set3DObject()
@@ -55,7 +62,11 @@ void Execute::Set3DObject()
 	camera->Init();
 	camera->GetComponent<Transform>()->SetWorldPosition(D3DXVECTOR3(0, 150, -350));
 
+	AnimationClip* attack1 = new AnimationClip("attack1", "Resource/GameObject/Crusader knight/animation/crusader@atack1.fbx");
+
 	crusaderKnight = new GameObject(ObjectType::Object3D, "Resource/GameObject/Crusader knight/animation/crusader@atack1.fbx");
+	crusaderKnight->AddComponent(new Animator(crusaderKnight));
+	crusaderKnight->GetComponent<Animator>()->AddAnimationClip(attack1);
 	crusaderKnight->Init();
 
 	crusaderKnight->childs[0]->childs[0]->childs[0]->childs[0]->GetComponent<SkinnedMeshRenderer>()->SetTexturePath("Resource/GameObject/Crusader knight/textures/mech_Albedo.png");
@@ -77,7 +88,6 @@ void Execute::Set2DObject()
 	mspf->AddComponent(new Text(mspf, L"Arial", L"Frame Time : ", 25, D2D1::ColorF::Gold));
 	mspf->Init();
 	mspf->GetComponent<RectTransform>()->SetWorldPosition(D3DXVECTOR3(55, 55, 0));
-
 
 	gameTime = new GameObject(ObjectType::UI);
 	gameTime->AddComponent(new Text(gameTime, L"Arial", L"Game Time : ", 25, D2D1::ColorF::Gold));

@@ -1,6 +1,5 @@
 #pragma once
 #include "Structure/GameObject.h"
-#include "Shader/DefaultShader_Specular.h"
 
 class Execute
 {
