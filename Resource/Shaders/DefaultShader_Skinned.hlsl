@@ -68,10 +68,10 @@ PixelInput VS(vertexInput Input)
 	// 법선 벡터를 정규화합니다.
     pixelout.normal = normalize(pixelout.normal);
     
-    float4 worldPosition = mul(Input.position, world);
+    //float4 worldPosition = mul(Input.position, world);
     
-    pixelout.viewDirection = cameraPosition.xyz - worldPosition.xyz;
-    pixelout.viewDirection = normalize(pixelout.viewDirection);
+    //pixelout.viewDirection = cameraPosition.xyz - worldPosition.xyz;
+    //pixelout.viewDirection = normalize(pixelout.viewDirection);
     
     return pixelout;
 }

@@ -8,6 +8,8 @@ SkinnedMeshRenderer::SkinnedMeshRenderer(GameObject * _object, const aiScene * _
 	pScene     = _pScene;
 	node       = _node;
 
+	indexoffset = 0;
+
 	pShader = ResourceManager::GetInstance()->GetShader("DefaultShader_Skinned");
 }
 
@@ -223,8 +225,6 @@ void SkinnedMeshRenderer::ProcessBone(aiMesh * mesh, const aiScene * scene)
 			boneInfo.push_back(bi);
 			boneInfo[boneIndex].boneOffset = mesh->mBones[i]->mOffsetMatrix;
 			boneMapping[boneName] = boneIndex;
-			
-			std::cout << boneName << "    " << boneIndex << std::endl;
 		}
 		else
 		{
@@ -235,7 +235,7 @@ void SkinnedMeshRenderer::ProcessBone(aiMesh * mesh, const aiScene * scene)
 		{
 			//UINT vertexID = skinDrawData[]
 			float weight = mesh->mBones[i]->mWeights[j].mWeight;
-			_bones[j].AddBoneData(boneIndex, weight);
+			_bones[mesh->mBones[i]->mWeights[j].mVertexId].AddBoneData(boneIndex, weight);
 		}
 	}
 }

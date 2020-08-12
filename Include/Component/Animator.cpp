@@ -12,15 +12,13 @@ Animator::~Animator()
 
 void Animator::Init()
 {
-	
-
 }
 
 void Animator::Update()
 {
 }
 
-void Animator::AddAnimationClip(AnimationClip * clip)
+void Animator::AddController(AnimationController * _controller)
 {
-	
+	controller = _controller;
 }

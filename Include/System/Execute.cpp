@@ -15,6 +15,7 @@
 #include "Shader/DefaultShader_Skinned.h"
 
 #include "Asset/AnimationClip.h"
+#include "Asset/AnimationController.h"
 
 Execute::~Execute()
 {
@@ -64,17 +65,20 @@ void Execute::Set3DObject()
 
 	AnimationClip* attack1 = new AnimationClip("attack1", "Resource/GameObject/Crusader knight/animation/crusader@atack1.fbx");
 
-	crusaderKnight = new GameObject(ObjectType::Object3D, "Resource/GameObject/Crusader knight/animation/crusader@atack1.fbx");
+	AnimationController* controller = new AnimationController();
+	controller->AddAnimationClip(attack1);
+
+	crusaderKnight = new GameObject(ObjectType::Object3D, "Resource/GameObject/Crusader knight/Base mesh/crusader base mesh.fbx");
 	crusaderKnight->AddComponent(new Animator(crusaderKnight));
-	crusaderKnight->GetComponent<Animator>()->AddAnimationClip(attack1);
+	crusaderKnight->GetComponent<Animator>()->AddController(controller);
 	crusaderKnight->Init();
 
-	crusaderKnight->childs[0]->childs[0]->childs[0]->childs[0]->GetComponent<SkinnedMeshRenderer>()->SetTexturePath("Resource/GameObject/Crusader knight/textures/mech_Albedo.png");
+/*	crusaderKnight->childs[0]->childs[0]->childs[0]->childs[0]->GetComponent<SkinnedMeshRenderer>()->SetTexturePath("Resource/GameObject/Crusader knight/textures/mech_Albedo.png");
 
 	for (auto i : crusaderKnight->childs[1]->childs[0]->childs)
 	{
 		i->childs[0]->GetComponent<SkinnedMeshRenderer>()->SetTexturePath("Resource/GameObject/Crusader knight/textures/crusader body_Albedopng.png");
-	}	
+	}*/	
 }
 
 void Execute::Set2DObject()

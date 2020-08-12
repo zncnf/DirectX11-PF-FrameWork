@@ -1,6 +1,6 @@
 #pragma once
 #include "Structure/Component.h"
-#include "Asset/AnimationClip.h"
+#include "Asset/AnimationController.h"
 
 class Animator : public Component
 {
@@ -13,13 +13,9 @@ public:
 	virtual void Update() override;
 
 public:
-	void AddAnimationClip(AnimationClip* clip);
+	void AddController(AnimationController* _controller);
 
 private:
-	const aiScene* pScene = nullptr;
-	aiNode* node = nullptr;
-	aiMesh*  pMesh = nullptr;
-
-	std::map<std::string, AnimationClip*> clips;
+	AnimationController* controller;
 };
 

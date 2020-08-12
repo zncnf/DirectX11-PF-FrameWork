@@ -36,8 +36,10 @@ GameObject::GameObject(ObjectType objectType, string filepath)
 			}
 			else
 			{
-				this->AddComponent(new MeshRenderer(this, pScene, pScene->mRootNode));
-				this->AddComponent(new MeshFilter(this, pScene, pScene->mRootNode));
+				/*this->AddComponent(new MeshRenderer(this, pScene, pScene->mRootNode));
+				this->AddComponent(new MeshFilter(this, pScene, pScene->mRootNode));*/
+
+				this->AddComponent(new SkinnedMeshRenderer(this, pScene, pScene->mRootNode));
 			}
 		}
 
@@ -81,13 +83,15 @@ GameObject::GameObject(aiNode * _node, const aiScene * _pScene, string filepath)
 	if (_node->mNumMeshes > 0)
 	{
 		if (_pScene->HasAnimations())
-		{
+		{			
 			this->AddComponent(new SkinnedMeshRenderer(this, _pScene, _node));
 		}
 		else
 		{
-			this->AddComponent(new MeshRenderer(this, _pScene, _node));
-			this->AddComponent(new MeshFilter(this, _pScene, _node));
+		/*	this->AddComponent(new MeshRenderer(this, _pScene, _node));
+			this->AddComponent(new MeshFilter(this, _pScene, _node));*/
+
+			this->AddComponent(new SkinnedMeshRenderer(this, _pScene, _node));
 		}
 	}
 

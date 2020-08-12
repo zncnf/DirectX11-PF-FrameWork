@@ -16,6 +16,8 @@ public:
 
 	UINT numBones = 0;
 
+	std::string clipName;
+
 public:
 	void Init();
 

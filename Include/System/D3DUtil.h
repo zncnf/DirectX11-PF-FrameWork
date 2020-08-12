@@ -164,7 +164,7 @@ struct VertexBoneData
 	{
 		for (UINT i = 0; i < ARRAY_SIZE_IN_ELEMENTS(Ids); i++)
 		{
-			if (Weights[i] = 0.0)
+			if (Weights[i] == 0.0)
 			{
 				Ids[i] = boneID;
 				Weights[i] = weight;

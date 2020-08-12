@@ -4,6 +4,7 @@
 AnimationClip::AnimationClip(const std::string _clipname, const std::string & filepath)
 {
 	pScene = aiImportFile(filepath.c_str(), aiProcess_ConvertToLeftHanded | aiProcess_Triangulate);
+	clipName = _clipname;
 
 	pAnimation = pScene->mAnimations[0];
 	globalInverseTransform = pScene->mRootNode->mTransformation.Inverse();

@@ -55,6 +55,8 @@ private:
 	VertexType_SkindMesh* vertices;
 	UINT* indices;
 
+	UINT indexoffset;
+
 	UINT offset;
 private:
 	ID3D11ShaderResourceView* m_ShaderResource = nullptr;
