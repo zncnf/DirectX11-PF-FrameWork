@@ -165,6 +165,10 @@ void GameObject::AddComponent(Component * _component)
 	components.push_back(_component);
 }
 
+void GameObject::NodeProcess(GameObject * object)
+{
+}
+
 void GameObject::AddChild(GameObject * _gameObject)
 {
 	childs.push_back(_gameObject);

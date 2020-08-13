@@ -29,7 +29,8 @@ public:
 	template<typename T>
 	T* GetComponent();
 	template<typename T>
-	vector<GameObject*> GetComponentsInChildren();
+	vector<T*> GetComponentsInChildren();
+	void NodeProcess(GameObject* object);
 
 	void AddChild(GameObject* _gameObject);
 public:
@@ -61,17 +62,17 @@ inline T * GameObject::GetComponent()
 }
 
 template<typename T>
-inline vector<GameObject*> GameObject::GetComponentsInChildren()
+inline vector<T*> GameObject::GetComponentsInChildren()
 {
-	vector<GameObject*> rChilds;
+	vector<T*> allChilds;
 
 	for (auto i : this->childs)
 	{
 		if (i->GetComponent<T>())
 		{
-			rChilds.push_back(i);
+			allChilds.push_back(i->GetComponent<T>());
 		}
 	}
 
-	return rChilds;
+	return allChilds;
 }
