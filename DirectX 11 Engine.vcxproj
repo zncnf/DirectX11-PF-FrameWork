@@ -108,7 +108,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>D3DUtil.h</PrecompiledHeaderFile>
       <DisableSpecificWarnings>4005;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <AdditionalIncludeDirectories>C:\Users\dpals\Desktop\DirectX 11 Engine\Include;C:\Users\dpals\Desktop\DirectX 11 Engine\Resource\GameObject;C:\Users\dpals\Desktop\DirectX 11 Engine\Include\System;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\dpals\Desktop\DirectX 11 Engine\Include;C:\Users\dpals\Desktop\DirectX 11 Engine\Include\System;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

@@ -1,6 +1,7 @@
 #pragma once
 #include "Structure/Component.h"
 #include "Asset/AnimationController.h"
+#include "SkinnedMeshRenderer.h"
 
 class Animator : public Component
 {
@@ -14,8 +15,27 @@ public:
 
 public:
 	void AddController(AnimationController* _controller);
+	void PlayAnimationWithClipName(std::string clipName);
 
 private:
 	AnimationController* controller;
+
+	vector<SkinnedMeshRenderer*> renderers;
+	const aiAnimation * m_Animation = nullptr;
+	aiMatrix4x4 m_GlobalInverseTransform;
+
+	UINT FindScaling(float AnimationTime, const aiNodeAnim* pNodeAnim);
+	UINT FindRotation(float AnimationTime, const aiNodeAnim* pNodeAnim);
+	UINT FindPosition(float AnimationTime, const aiNodeAnim* pNodeAnim);
+
+	void CalcInterpolatedScaling(aiVector3D& Out, float AnimationTime, const aiNodeAnim* pNodeAnim);
+	void CalcInterpolatedRotation(aiQuaternion& Out, float AnimationTime, const aiNodeAnim* pNodeAnim);
+	void CalcInterpolatedPosition(aiVector3D& Out, float AnimationTime, const aiNodeAnim* pNodeAnim);
+
+	const aiNodeAnim* FindNodeAnim(const aiAnimation* pAnimation, const std::string NodeName);
+
+	void ReadNodeHeirarchy(float AnimationTime, const aiNode* pNode, const aiMatrix4x4& ParentTransform);
+
+	void TestPlay(const aiNode * _rootNode);
 };
 

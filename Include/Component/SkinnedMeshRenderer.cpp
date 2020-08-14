@@ -11,6 +11,8 @@ SkinnedMeshRenderer::SkinnedMeshRenderer(GameObject * _object, const aiScene * _
 	indexoffset = 0;
 	boneCount = 0;
 
+	name = _node->mName.data;
+
 	pShader = ResourceManager::GetInstance()->GetShader("DefaultShader_Skinned");
 }
 
@@ -241,8 +243,10 @@ void SkinnedMeshRenderer::ProcessBone(aiMesh * mesh, const aiScene * scene)
 		for (UINT j = 0; j < mesh->mBones[i]->mNumWeights; j++)
 		{
 			float weight = mesh->mBones[i]->mWeights[j].mWeight;
-			_bones[mesh->mBones[i]->mWeights[j].mVertexId].AddBoneData(boneIndex, weight);
+			_bones[mesh->mBones[i]->mWeights[j].mVertexId].AddBoneData(boneIndex, weight); // 현재 boneIndex가 예제와 다름.
 			//_bones : 해당하는 정점인덱스 원소로 해당 정점의 뼈 색인과 가중치가 들어감.
+
+			cout << boneIndex << endl; 
 		}
 	}
 }

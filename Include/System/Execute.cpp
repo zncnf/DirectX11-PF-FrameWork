@@ -73,12 +73,27 @@ void Execute::Set3DObject()
 	crusaderKnight->GetComponent<Animator>()->AddController(controller);
 	crusaderKnight->Init();
 
-/*	crusaderKnight->childs[0]->childs[0]->childs[0]->childs[0]->GetComponent<SkinnedMeshRenderer>()->SetTexturePath("Resource/GameObject/Crusader knight/textures/mech_Albedo.png");
+	//cout << crusaderKnight->GetComponentsInAllChildren<SkinnedMeshRenderer>() << endl;;
 
-	for (auto i : crusaderKnight->childs[1]->childs[0]->childs)
+	//파일자체 문제로 Assimp 가 텍스쳐 경로를 원할하게 받아오지못하여 수동으로 셋팅해줌.
+	#pragma region Texture Setting for attack.fbx
+	//crusaderKnight->childs[0]->childs[0]->childs[0]->childs[0]->GetComponent<SkinnedMeshRenderer>()->SetTexturePath("Resource/GameObject/Crusader knight/textures/mech_Albedo.png");
+	//
+	//for (auto i : crusaderKnight->childs[1]->childs[0]->childs)
+	//{
+	//	i->childs[0]->GetComponent<SkinnedMeshRenderer>()->SetTexturePath("Resource/GameObject/Crusader knight/textures/crusader body_Albedopng.png");
+	//}
+	#pragma endregion
+
+	#pragma region Texture Setting for baseMesh.fbx
+	crusaderKnight->childs[0]->childs[0]->childs[0]->childs[0]->GetComponent<SkinnedMeshRenderer>()->SetTexturePath("Resource/GameObject/Crusader knight/textures/mech_Albedo.png");
+	
+	for (auto i : crusaderKnight->childs[0]->childs[0]->childs)
 	{
 		i->childs[0]->GetComponent<SkinnedMeshRenderer>()->SetTexturePath("Resource/GameObject/Crusader knight/textures/crusader body_Albedopng.png");
-	}*/	
+	}
+	#pragma endregion
+
 }
 
 void Execute::Set2DObject()
@@ -101,11 +116,14 @@ void Execute::Set2DObject()
 
 void Execute::Render3D()
 {
+	if (InputManager::GetInstance()->KeyboardDown(DIK_F))
+	{
+		crusaderKnight->GetComponent<Animator>()->PlayAnimationWithClipName("attack1");
+	}
+
 	directionalLight->Update();
 	camera->Update();
 	crusaderKnight->Update();
-
-	crusaderKnight->GetComponent<Transform>()->Rotate(D3DXVECTOR3(0, 1, 0));
 }
 
 void Execute::Render2D()
