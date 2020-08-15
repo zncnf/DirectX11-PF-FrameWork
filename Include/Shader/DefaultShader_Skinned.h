@@ -9,7 +9,7 @@ public:
 
 public:
 	virtual void Init() override;
-	virtual void Update(D3DXMATRIX world, D3DXMATRIX view, D3DXMATRIX projection, D3DXVECTOR4 diffuseColor, D3DXVECTOR4 ambientColor, D3DXVECTOR4 specularColor, float specularPower, std::vector<struct BoneInfo>* boneInfo, int count) override;
+	virtual void Update(D3DXMATRIX world, D3DXMATRIX view, D3DXMATRIX projection, D3DXVECTOR4 diffuseColor, D3DXVECTOR4 ambientColor, D3DXVECTOR4 specularColor, float specularPower, std::vector<struct BoneInfo>* boneInfo) override;
 
 private:
 	ID3D11VertexShader* VS_Shader = nullptr;

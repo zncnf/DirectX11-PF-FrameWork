@@ -64,10 +64,11 @@ void Execute::Set3DObject()
 	camera->GetComponent<Transform>()->SetWorldPosition(D3DXVECTOR3(0, 150, -350));
 
 	AnimationClip* attack1 = new AnimationClip("attack1", "Resource/GameObject/Crusader knight/animation/crusader@atack1.fbx");
-	attack1->speed = 10.0f;
+	AnimationClip* death1 = new AnimationClip("death1", "Resource/GameObject/Crusader knight/animation/crusader@death1.fbx");
 
 	AnimationController* controller = new AnimationController();
 	controller->AddAnimationClip(attack1);
+	controller->AddAnimationClip(death1);
 
 	crusaderKnight = new GameObject(ObjectType::Object3D, "Resource/GameObject/Crusader knight/Base mesh/crusader base mesh.fbx");
 	crusaderKnight->AddComponent(new Animator(crusaderKnight));
@@ -92,7 +93,6 @@ void Execute::Set3DObject()
 		i->childs[0]->GetComponent<SkinnedMeshRenderer>()->SetTexturePath("Resource/GameObject/Crusader knight/textures/crusader body_Albedopng.png");
 	}
 	#pragma endregion
-
 }
 
 void Execute::Set2DObject()
@@ -115,10 +115,7 @@ void Execute::Set2DObject()
 
 void Execute::Render3D()
 {
-	if (InputManager::GetInstance()->KeyboardDown(DIK_F))
-	{
-		crusaderKnight->GetComponent<Animator>()->PlayAnimationWithClipName("attack1");
-	}
+	crusaderKnight->GetComponent<Animator>()->PlayAnimationWithClipName("attack1");
 
 	directionalLight->Update();
 	camera->Update();

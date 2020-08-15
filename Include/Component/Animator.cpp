@@ -70,7 +70,7 @@ UINT Animator::FindPosition(float AnimationTime, const aiNodeAnim * pNodeAnim)
 {
 	for (UINT i = 0; i < pNodeAnim->mNumPositionKeys - 1; i++) {
 		if (AnimationTime < (float)pNodeAnim->mPositionKeys[i + 1].mTime) {
-			return i;
+			return i;			
 		}
 	}
 
@@ -86,10 +86,12 @@ void Animator::CalcInterpolatedScaling(aiVector3D & Out, float AnimationTime, co
 
 	UINT ScalingIndex = FindScaling(AnimationTime, pNodeAnim);
 	UINT NextScalingIndex = (ScalingIndex + 1);
-	assert(NextScalingIndex < pNodeAnim->mNumScalingKeys);
+
+	//assert(NextScalingIndex < pNodeAnim->mNumScalingKeys);
 	float DeltaTime = (float)(pNodeAnim->mScalingKeys[NextScalingIndex].mTime - pNodeAnim->mScalingKeys[ScalingIndex].mTime);
 	float Factor = (AnimationTime - (float)pNodeAnim->mScalingKeys[ScalingIndex].mTime) / DeltaTime;
-	assert(Factor >= 0.0f && Factor <= 1.0f);
+
+	//assert(Factor >= 0.0f && Factor <= 1.0f);
 	const aiVector3D& Start = pNodeAnim->mScalingKeys[ScalingIndex].mValue;
 	const aiVector3D& End = pNodeAnim->mScalingKeys[NextScalingIndex].mValue;
 	aiVector3D Delta = End - Start;
@@ -106,13 +108,14 @@ void Animator::CalcInterpolatedRotation(aiQuaternion & Out, float AnimationTime,
 
 	UINT RotationIndex = FindRotation(AnimationTime, pNodeAnim);
 	UINT NextRotationIndex = (RotationIndex + 1);
-	assert(NextRotationIndex < pNodeAnim->mNumRotationKeys);
+	//assert(NextRotationIndex < pNodeAnim->mNumRotationKeys);
 	float DeltaTime = (float)(pNodeAnim->mRotationKeys[NextRotationIndex].mTime - pNodeAnim->mRotationKeys[RotationIndex].mTime);
 	float Factor = (AnimationTime - (float)pNodeAnim->mRotationKeys[RotationIndex].mTime) / DeltaTime;
-	assert(Factor >= 0.0f && Factor <= 1.0f);
+	//assert(Factor >= 0.0f && Factor <= 1.0f);
 	const aiQuaternion& StartRotationQ = pNodeAnim->mRotationKeys[RotationIndex].mValue;
 	const aiQuaternion& EndRotationQ = pNodeAnim->mRotationKeys[NextRotationIndex].mValue;
 	aiQuaternion::Interpolate(Out, StartRotationQ, EndRotationQ, Factor);
+
 	Out = Out.Normalize();
 }
 
@@ -126,10 +129,10 @@ void Animator::CalcInterpolatedPosition(aiVector3D & Out, float AnimationTime, c
 	UINT PositionIndex = FindPosition(AnimationTime, pNodeAnim);
 	UINT NextPositionIndex = (PositionIndex + 1);
 
-	assert(NextPositionIndex < pNodeAnim->mNumPositionKeys);
+	//assert(NextPositionIndex < pNodeAnim->mNumPositionKeys);
 	float DeltaTime = (float)(pNodeAnim->mPositionKeys[NextPositionIndex].mTime - pNodeAnim->mPositionKeys[PositionIndex].mTime);
 	float Factor = (AnimationTime - (float)pNodeAnim->mPositionKeys[PositionIndex].mTime) / DeltaTime;
-	assert(Factor >= 0.0f && Factor <= 1.0f);
+	//assert(Factor >= 0.0f && Factor <= 1.0f);
 	const aiVector3D& Start = pNodeAnim->mPositionKeys[PositionIndex].mValue;
 	const aiVector3D& End = pNodeAnim->mPositionKeys[NextPositionIndex].mValue;
 	aiVector3D Delta = End - Start;
@@ -138,11 +141,10 @@ void Animator::CalcInterpolatedPosition(aiVector3D & Out, float AnimationTime, c
 
 const aiNodeAnim * Animator::FindNodeAnim(const aiAnimation * pAnimation, const std::string NodeName)
 {
-	for (UINT i = 0; i < pAnimation->mNumChannels; i++) {
-		const aiNodeAnim* pNodeAnim = pAnimation->mChannels[i];
-
-		if (std::string(pNodeAnim->mNodeName.data) == NodeName) {
-			return pNodeAnim;
+	for (UINT i = 0; i < pAnimation->mNumChannels; i++) 
+	{
+		if (pAnimation->mChannels[i]->mNodeName.C_Str() == NodeName) {
+			return pAnimation->mChannels[i];
 		}
 	}
 
@@ -151,7 +153,7 @@ const aiNodeAnim * Animator::FindNodeAnim(const aiAnimation * pAnimation, const 
 
 void Animator::ReadNodeHeirarchy(float AnimationTime, const aiNode * pNode, const aiMatrix4x4 & ParentTransform)
 {
-	std::string NodeName(pNode->mName.data);
+	NodeName = pNode->mName.C_Str();
 
 	aiMatrix4x4 NodeTransformation(pNode->mTransformation);
 
@@ -187,13 +189,16 @@ void Animator::ReadNodeHeirarchy(float AnimationTime, const aiNode * pNode, cons
 		GlobalTransformation = ParentTransform * NodeTransformation;
 	}
 
-	for (UINT i = 0; i < renderers.size(); i++)
+	if (strlen(NodeName.c_str()) != 0)
 	{
-		if (renderers[i]->boneMapping.find(NodeName) != renderers[i]->boneMapping.end())
+		for (UINT i = 0; i < renderers.size(); i++)
 		{
-			UINT BoneIndex = renderers[i]->boneMapping.at(NodeName);
-			const aiMatrix4x4 m = m_GlobalInverseTransform * GlobalTransformation * renderers[i]->boneInfo.at(BoneIndex).boneOffset;
-			renderers[i]->boneInfo.at(BoneIndex).finalTransformation = m;
+			if (renderers[i]->boneMapping.find(NodeName) != renderers[i]->boneMapping.end()) // frame 저하 부분.
+			{
+				UINT BoneIndex = renderers[i]->boneMapping.at(NodeName);
+				const aiMatrix4x4 m = m_GlobalInverseTransform * GlobalTransformation * renderers[i]->boneInfo.at(BoneIndex).boneOffset;
+				renderers[i]->boneInfo.at(BoneIndex).finalTransformation = m;
+			}
 		}
 	}
 
@@ -211,5 +216,9 @@ void Animator::Play(const aiNode * _rootNode)
 	if (TimeInSeconds >= m_Animation->mDuration)
 		TimeInSeconds = 0;
 
-	ReadNodeHeirarchy(TimeInSeconds, _rootNode, Identity);
+	double TimeInTicks = TimeInSeconds * m_Animation->mTicksPerSecond;
+	double AnimationTime = fmod(TimeInTicks, m_Animation->mDuration);
+
+
+	ReadNodeHeirarchy(AnimationTime, _rootNode, Identity);
 }

@@ -118,7 +118,7 @@ void SkinnedMeshRenderer::Update()
 		D3DXVECTOR4 specular(specularColor.r, specularColor.g, specularColor.b, specularColor.a);
 
 		pShader->Update(gameObject->transform->worldMatrix, GameManager::GetInstance()->viewMatrix, GameManager::GetInstance()->projectionMatrix,
-			diffuse, ambient, specular, 32.0f, &boneInfo, (int)_indices.size());
+			diffuse, ambient, specular, 32.0f, &boneInfo);
 
 		DirectXManager::GetInstance()->GetDeviceContext()->PSSetShaderResources(0, 1, &m_ShaderResource);
 		DirectXManager::GetInstance()->GetDeviceContext()->PSSetSamplers(0, 1, &m_SampleState);

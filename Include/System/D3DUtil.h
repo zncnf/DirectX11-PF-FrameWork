@@ -71,8 +71,8 @@ using namespace std;
 #define SafeDeleteArray(x) { if(x) { delete[] (x); (x) = nullptr; } }
 #define ZEROMEM(x)		    memset(x, 0, sizeof(x)) 
 #define ARRAY_SIZE_IN_ELEMENTS(x) (sizeof(x)/sizeof(x[0]))
-#define ASSIMP_LOAD_FLAG_1 (aiProcess_Triangulate | aiProcess_LimitBoneWeights | aiProcess_FlipUVs | aiProcess_FlipWindingOrder | aiProcess_SortByPType | aiProcess_MakeLeftHanded)
-#define ASSIMP_LOAD_FLAG_2 (aiProcess_ConvertToLeftHanded | aiProcess_Triangulate)
+#define ASSIMP_LOAD_FLAG_2 (aiProcess_Triangulate | aiProcess_LimitBoneWeights | aiProcess_FlipUVs | aiProcess_FlipWindingOrder | aiProcess_SortByPType | aiProcess_MakeLeftHanded)
+#define ASSIMP_LOAD_FLAG_1 (aiProcess_ConvertToLeftHanded | aiProcess_Triangulate)
 #pragma endregion
 
 #pragma region Structs

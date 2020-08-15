@@ -24,6 +24,7 @@ private:
 	const aiAnimation * m_Animation = nullptr;
 	aiMatrix4x4 m_GlobalInverseTransform;
 
+	std::string NodeName;
 	float TimeInSeconds;
 
 	AnimationClip* clip;

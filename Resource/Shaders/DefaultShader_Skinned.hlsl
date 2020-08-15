@@ -47,14 +47,14 @@ cbuffer LightBuffer : register(b0)
 
 PixelInput VS(vertexInput Input)
 {
-    PixelInput pixelout;
+    PixelInput pixelout = (PixelInput)0;
 
     matrix BoneTransform = bones[Input.boneids[0]] * Input.weights[0];
     BoneTransform += bones[Input.boneids[1]] * Input.weights[1];
     BoneTransform += bones[Input.boneids[2]] * Input.weights[2];
     BoneTransform += bones[Input.boneids[3]] * Input.weights[3];
 
-    Input.position.w = 1.f;
+    Input.position.w = 1.0f;
 
     pixelout.position = mul(Input.position, BoneTransform);
     
@@ -63,6 +63,7 @@ PixelInput VS(vertexInput Input)
     pixelout.position = mul(pixelout.position, proj);
 
     pixelout.uv = Input.uv;
+    
     pixelout.normal = mul(Input.normal, (float3x3) world);
     pixelout.normal = normalize(pixelout.normal);
     
