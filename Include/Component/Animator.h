@@ -24,6 +24,10 @@ private:
 	const aiAnimation * m_Animation = nullptr;
 	aiMatrix4x4 m_GlobalInverseTransform;
 
+	float TimeInSeconds;
+
+	AnimationClip* clip;
+
 	UINT FindScaling(float AnimationTime, const aiNodeAnim* pNodeAnim);
 	UINT FindRotation(float AnimationTime, const aiNodeAnim* pNodeAnim);
 	UINT FindPosition(float AnimationTime, const aiNodeAnim* pNodeAnim);
@@ -36,6 +40,6 @@ private:
 
 	void ReadNodeHeirarchy(float AnimationTime, const aiNode* pNode, const aiMatrix4x4& ParentTransform);
 
-	void TestPlay(const aiNode * _rootNode);
+	void Play(const aiNode * _rootNode);
 };
 

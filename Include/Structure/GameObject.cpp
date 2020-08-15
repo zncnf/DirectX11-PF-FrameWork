@@ -22,7 +22,8 @@ GameObject::GameObject(ObjectType objectType, string filepath)
 	case ObjectType::Object3D:
 	{
 		active = true;
-		pScene = aiImportFile(filepath.c_str(), aiProcess_ConvertToLeftHanded | aiProcess_Triangulate);
+		pScene = aiImportFile(filepath.c_str(), ASSIMP_LOAD_FLAG_1);
+
 		name = pScene->mRootNode->mName.C_Str();
 		directory = filepath.substr(0, filepath.find_last_of("/"));		
 		

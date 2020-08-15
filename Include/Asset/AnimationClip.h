@@ -9,6 +9,7 @@ public:
 public:
 	const aiScene* pScene = nullptr;
 	std::string clipName;
+	float speed;
 
 public:
 	void Init();

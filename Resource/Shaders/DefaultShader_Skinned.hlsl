@@ -63,43 +63,41 @@ PixelInput VS(vertexInput Input)
     pixelout.position = mul(pixelout.position, proj);
 
     pixelout.uv = Input.uv;
-	// 월드 행렬에 대해서만 법선 벡터를 계산합니다.
     pixelout.normal = mul(Input.normal, (float3x3) world);
-	// 법선 벡터를 정규화합니다.
     pixelout.normal = normalize(pixelout.normal);
     
-    //float4 worldPosition = mul(Input.position, world);
+    float4 worldPosition = mul(Input.position, world);
     
-    //pixelout.viewDirection = cameraPosition.xyz - worldPosition.xyz;
-    //pixelout.viewDirection = normalize(pixelout.viewDirection);
+    pixelout.viewDirection = cameraPosition.xyz - worldPosition.xyz;
+    pixelout.viewDirection = normalize(pixelout.viewDirection);
     
     return pixelout;
 }
 
 float4 PS(PixelInput input) : SV_Target
 {
-    //float4 textureColor;
-    //float4 color;
-    //float4 specular;
-    //float3 lightDir;
-    //float lightIntensity;
+    float4 textureColor;
+    float4 color;
+    float4 specular;
+    float3 lightDir;
+    float lightIntensity;
 
-    //textureColor = shaderTexture.Sample(SampleType, input.uv);
-    //color = ambientColor;
-    //specular = float4(0.0f, 0.0f, 0.0f, 0.0f);
-    //lightDir = -lightDirection;
-    //lightIntensity = saturate(dot(input.normal, lightDir));
+    textureColor = shaderTexture.Sample(SampleType, input.uv);
+    color = ambientColor;
+    specular = float4(0.0f, 0.0f, 0.0f, 0.0f);
+    lightDir = -lightDirection;
+    lightIntensity = saturate(dot(input.normal, lightDir));
     
-    //if (lightIntensity > 0.0f)
-    //{
-    //    color += (diffuseColor * lightIntensity);
-    //    color = saturate(color);
-    //    float3 reflection = normalize(2 * lightIntensity * input.normal - lightDir);
-    //    specular = pow(saturate(dot(reflection, input.viewDirection)), specularPower);
-    //}
+    if (lightIntensity > 0.0f)
+    {
+        color += (diffuseColor * lightIntensity);
+        color = saturate(color);
+        float3 reflection = normalize(2 * lightIntensity * input.normal - lightDir);
+        specular = pow(saturate(dot(reflection, input.viewDirection)), specularPower);
+    }
     
-    //color = color * textureColor;
-    //color = saturate(color + specular);
-    float4 color = shaderTexture.Sample(SampleType, input.uv);
+    color = color * textureColor;
+    color = saturate(color + specular);
+    
     return color;
 }

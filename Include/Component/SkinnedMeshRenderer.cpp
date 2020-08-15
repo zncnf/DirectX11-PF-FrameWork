@@ -9,7 +9,7 @@ SkinnedMeshRenderer::SkinnedMeshRenderer(GameObject * _object, const aiScene * _
 	node       = _node;
 
 	indexoffset = 0;
-	boneCount = 0;
+	//boneCount = 0;
 
 	name = _node->mName.data;
 
@@ -50,7 +50,7 @@ void SkinnedMeshRenderer::Init()
 	}
 
 	D3D11_BUFFER_DESC vertexBufferDesc;
-	vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	vertexBufferDesc.Usage = D3D11_USAGE_IMMUTABLE;
 	vertexBufferDesc.ByteWidth = sizeof(VertexType_SkindMesh) * vertexCount;
 	vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	vertexBufferDesc.CPUAccessFlags = 0;
@@ -66,7 +66,7 @@ void SkinnedMeshRenderer::Init()
 		return;
 
 	D3D11_BUFFER_DESC indexBufferDesc;
-	indexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	indexBufferDesc.Usage = D3D11_USAGE_IMMUTABLE;
 	indexBufferDesc.ByteWidth = sizeof(UINT) * indexCount;
 	indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
 	indexBufferDesc.CPUAccessFlags = 0;
@@ -118,7 +118,7 @@ void SkinnedMeshRenderer::Update()
 		D3DXVECTOR4 specular(specularColor.r, specularColor.g, specularColor.b, specularColor.a);
 
 		pShader->Update(gameObject->transform->worldMatrix, GameManager::GetInstance()->viewMatrix, GameManager::GetInstance()->projectionMatrix,
-			diffuse, ambient, specular, 32.0f, &boneInfo, _indices.size());
+			diffuse, ambient, specular, 32.0f, &boneInfo, (int)_indices.size());
 
 		DirectXManager::GetInstance()->GetDeviceContext()->PSSetShaderResources(0, 1, &m_ShaderResource);
 		DirectXManager::GetInstance()->GetDeviceContext()->PSSetSamplers(0, 1, &m_SampleState);
@@ -154,7 +154,7 @@ void SkinnedMeshRenderer::ProcessNode(aiNode * node, const aiScene * scene)
 
 void SkinnedMeshRenderer::ProcessMesh(aiMesh * mesh, const aiScene * scene)
 {
-	ProcessBone(mesh, scene);
+	ProcessBone(mesh, scene);	
 
 	for (UINT i = 0; i < mesh->mNumVertices; i++)
 	{
@@ -164,10 +164,15 @@ void SkinnedMeshRenderer::ProcessMesh(aiMesh * mesh, const aiScene * scene)
 		vertex.position.y = mesh->mVertices[i].y;
 		vertex.position.z = mesh->mVertices[i].z;
 
-		if (mesh->mTextureCoords[0])
+		if (mesh->HasTextureCoords(0))
 		{
 			vertex.texture.x = (float)mesh->mTextureCoords[0][i].x;
-			vertex.texture.y = (float)mesh->mTextureCoords[0][i].y;
+			vertex.texture.y = (float)mesh->mTextureCoords[0][i].y;			
+		}
+		else
+		{
+			vertex.texture.x = 0.0f;
+			vertex.texture.y = 0.0f;
 		}
 
 		for (int j = 0; j < 4; ++j)
@@ -237,16 +242,14 @@ void SkinnedMeshRenderer::ProcessBone(aiMesh * mesh, const aiScene * scene)
 		else
 		{
 			// 찾은경우
-			boneIndex = boneMapping[boneName];
+			boneIndex = boneMapping[boneName];	
 		}
 		// mNumWeights : 이 뼈의 영향을 받는 정점들의 수
 		for (UINT j = 0; j < mesh->mBones[i]->mNumWeights; j++)
 		{
 			float weight = mesh->mBones[i]->mWeights[j].mWeight;
 			_bones[mesh->mBones[i]->mWeights[j].mVertexId].AddBoneData(boneIndex, weight); // 현재 boneIndex가 예제와 다름.
-			//_bones : 해당하는 정점인덱스 원소로 해당 정점의 뼈 색인과 가중치가 들어감.
-
-			cout << boneIndex << endl; 
+			//_bones : 해당하는 정점인덱스 원소로 해당 정점의 뼈 색인과 가중치가 들어감.		
 		}
 	}
 }

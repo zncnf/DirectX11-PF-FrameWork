@@ -64,6 +64,7 @@ void Execute::Set3DObject()
 	camera->GetComponent<Transform>()->SetWorldPosition(D3DXVECTOR3(0, 150, -350));
 
 	AnimationClip* attack1 = new AnimationClip("attack1", "Resource/GameObject/Crusader knight/animation/crusader@atack1.fbx");
+	attack1->speed = 10.0f;
 
 	AnimationController* controller = new AnimationController();
 	controller->AddAnimationClip(attack1);
@@ -71,9 +72,7 @@ void Execute::Set3DObject()
 	crusaderKnight = new GameObject(ObjectType::Object3D, "Resource/GameObject/Crusader knight/Base mesh/crusader base mesh.fbx");
 	crusaderKnight->AddComponent(new Animator(crusaderKnight));
 	crusaderKnight->GetComponent<Animator>()->AddController(controller);
-	crusaderKnight->Init();
-
-	//cout << crusaderKnight->GetComponentsInAllChildren<SkinnedMeshRenderer>() << endl;;
+	crusaderKnight->Init();	
 
 	//파일자체 문제로 Assimp 가 텍스쳐 경로를 원할하게 받아오지못하여 수동으로 셋팅해줌.
 	#pragma region Texture Setting for attack.fbx
@@ -86,8 +85,8 @@ void Execute::Set3DObject()
 	#pragma endregion
 
 	#pragma region Texture Setting for baseMesh.fbx
-	crusaderKnight->childs[0]->childs[0]->childs[0]->childs[0]->GetComponent<SkinnedMeshRenderer>()->SetTexturePath("Resource/GameObject/Crusader knight/textures/mech_Albedo.png");
-	
+	crusaderKnight->childs[1]->childs[0]->GetComponent<SkinnedMeshRenderer>()->SetTexturePath("Resource/GameObject/Crusader knight/textures/mech_Albedo.png");
+
 	for (auto i : crusaderKnight->childs[0]->childs[0]->childs)
 	{
 		i->childs[0]->GetComponent<SkinnedMeshRenderer>()->SetTexturePath("Resource/GameObject/Crusader knight/textures/crusader body_Albedopng.png");

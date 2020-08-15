@@ -1,9 +1,12 @@
 #include "D3DUtil.h"
 #include "Animator.h"
+#include "GameTimer.h"
 
 Animator::Animator(GameObject* _object)
 {
 	gameObject = _object;
+
+	TimeInSeconds = 0.f;
 }
 
 Animator::~Animator()
@@ -26,14 +29,14 @@ void Animator::AddController(AnimationController * _controller)
 
 void Animator::PlayAnimationWithClipName(std::string clipName)
 {
-	AnimationClip* clip = controller->GetClipWithName(clipName);
+	clip = controller->GetClipWithName(clipName);
 
 	if(clip)
 	{
 		m_GlobalInverseTransform = clip->pScene->mRootNode->mTransformation.Inverse();
-		m_Animation = clip->pScene->mAnimations[0];
+		m_Animation = clip->pScene->mAnimations[0];		
 
-		TestPlay(clip->pScene->mRootNode);
+		Play(clip->pScene->mRootNode);
 	}
 }
 
@@ -173,7 +176,16 @@ void Animator::ReadNodeHeirarchy(float AnimationTime, const aiNode * pNode, cons
 		NodeTransformation = TranslationM * RotationM * ScalingM;
 	}
 
-	aiMatrix4x4 GlobalTransformation = ParentTransform * NodeTransformation;
+	aiMatrix4x4 GlobalTransformation;
+
+	if (strlen(NodeName.c_str()) == 0)
+	{
+		GlobalTransformation = ParentTransform;
+	}
+	else
+	{
+		GlobalTransformation = ParentTransform * NodeTransformation;
+	}
 
 	for (UINT i = 0; i < renderers.size(); i++)
 	{
@@ -190,29 +202,14 @@ void Animator::ReadNodeHeirarchy(float AnimationTime, const aiNode * pNode, cons
 	}
 }
 
-void Animator::TestPlay(const aiNode * _rootNode)
+void Animator::Play(const aiNode * _rootNode)
 {
 	aiMatrix4x4 Identity;
 
-	Identity.a2 = Identity.a3 = Identity.a4 = 0;
-	Identity.b1 = Identity.b3 = Identity.b4 = 0;
-	Identity.c1 = Identity.c2 = Identity.c4 = 0;
-	Identity.d1 = Identity.d2 = Identity.d3 = 0;
+	TimeInSeconds += GameManager::GetInstance()->gameTimer->DeltaTime() * clip->speed;
 
-	Identity.a1 = Identity.b2 = Identity.c3 = Identity.d4 = 1;
-
-	float TicksPerSecond = m_Animation->mTicksPerSecond != 0 ?
-		m_Animation->mTicksPerSecond : 25.0f;
-
-	static float TimeInSeconds = 0.f;
-
-	TimeInSeconds += 20.f;
-
-	if (TimeInSeconds >= 120.f)
+	if (TimeInSeconds >= m_Animation->mDuration)
 		TimeInSeconds = 0;
-
-	float TimeInTicks = TimeInSeconds * TicksPerSecond;
-	float AnimationTime = fmod(TimeInTicks, m_Animation->mDuration);
 
 	ReadNodeHeirarchy(TimeInSeconds, _rootNode, Identity);
 }
