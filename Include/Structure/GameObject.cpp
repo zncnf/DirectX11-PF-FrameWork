@@ -92,7 +92,8 @@ GameObject::GameObject(aiNode * _node, const aiScene * _pScene, string filepath)
 		/*	this->AddComponent(new MeshRenderer(this, _pScene, _node));
 			this->AddComponent(new MeshFilter(this, _pScene, _node));*/
 
-			this->AddComponent(new SkinnedMeshRenderer(this, _pScene, _node));
+			if (name == "crusader_body:Group15932")
+				this->AddComponent(new SkinnedMeshRenderer(this, _pScene, _node));
 		}
 	}
 

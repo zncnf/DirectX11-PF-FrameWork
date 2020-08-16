@@ -175,7 +175,7 @@ void SkinnedMeshRenderer::ProcessMesh(aiMesh * mesh, const aiScene * scene)
 			vertex.texture.y = 0.0f;
 		}
 
-		for (int j = 0; j < 4; ++j)
+		for (int j = 0; j < NUM_BONES_PER_VERTEX; ++j)
 		{
 			vertex.boneID[j] = _bones[i].Ids[j];
 			vertex.weights[j] = _bones[i].Weights[j];
@@ -224,32 +224,24 @@ void SkinnedMeshRenderer::ProcessMesh(aiMesh * mesh, const aiScene * scene)
 void SkinnedMeshRenderer::ProcessBone(aiMesh * mesh, const aiScene * scene)
 {
 	for (UINT i = 0; i < mesh->mNumBones; i++)
-	{
-		UINT boneIndex = 0;
-		std::string boneName(mesh->mBones[i]->mName.data);
+	{		
+		std::string boneName = mesh->mBones[i]->mName.C_Str();
 
-		//find함수는 해당 원소를 찾지못하면 end()를 반환한다.
 		if (boneMapping.find(boneName) == boneMapping.end())
-		{
-			// 못찾은경우
-			boneIndex = boneCount;
-			boneCount++;
+		{					
 			BoneInfo bi;
+			bi.boneOffset = mesh->mBones[i]->mOffsetMatrix;
 			boneInfo.push_back(bi);
-			boneInfo[boneIndex].boneOffset = mesh->mBones[i]->mOffsetMatrix;
-			boneMapping[boneName] = boneIndex;
+			boneMapping[boneName] = i;
 		}
 		else
-		{
-			// 찾은경우
-			boneIndex = boneMapping[boneName];	
-		}
-		// mNumWeights : 이 뼈의 영향을 받는 정점들의 수
+			i = boneMapping[boneName];			
+
+
 		for (UINT j = 0; j < mesh->mBones[i]->mNumWeights; j++)
 		{
 			float weight = mesh->mBones[i]->mWeights[j].mWeight;
-			_bones[mesh->mBones[i]->mWeights[j].mVertexId].AddBoneData(boneIndex, weight); // 현재 boneIndex가 예제와 다름.
-			//_bones : 해당하는 정점인덱스 원소로 해당 정점의 뼈 색인과 가중치가 들어감.		
+			_bones[mesh->mBones[i]->mWeights[j].mVertexId].AddBoneData(i, weight);	
 		}
 	}
 }

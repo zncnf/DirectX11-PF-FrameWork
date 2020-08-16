@@ -53,6 +53,11 @@ PixelInput VS(vertexInput Input)
     BoneTransform += bones[Input.boneids[1]] * Input.weights[1];
     BoneTransform += bones[Input.boneids[2]] * Input.weights[2];
     BoneTransform += bones[Input.boneids[3]] * Input.weights[3];
+    //BoneTransform += bones[Input.boneids[4]] * Input.weights[4];
+    //BoneTransform += bones[Input.boneids[5]] * Input.weights[5];
+    //BoneTransform += bones[Input.boneids[6]] * Input.weights[6];
+    //BoneTransform += bones[Input.boneids[7]] * Input.weights[7];
+
 
     Input.position.w = 1.0f;
 
@@ -77,28 +82,29 @@ PixelInput VS(vertexInput Input)
 
 float4 PS(PixelInput input) : SV_Target
 {
-    float4 textureColor;
-    float4 color;
-    float4 specular;
-    float3 lightDir;
-    float lightIntensity;
+    //float4 textureColor;
+    //float4 color;
+    //float4 specular;
+    //float3 lightDir;
+    //float lightIntensity;
 
-    textureColor = shaderTexture.Sample(SampleType, input.uv);
-    color = ambientColor;
-    specular = float4(0.0f, 0.0f, 0.0f, 0.0f);
-    lightDir = -lightDirection;
-    lightIntensity = saturate(dot(input.normal, lightDir));
+    //textureColor = shaderTexture.Sample(SampleType, input.uv);
+    //color = ambientColor;
+    //specular = float4(0.0f, 0.0f, 0.0f, 0.0f);
+    //lightDir = -lightDirection;
+    //lightIntensity = saturate(dot(input.normal, lightDir));
     
-    if (lightIntensity > 0.0f)
-    {
-        color += (diffuseColor * lightIntensity);
-        color = saturate(color);
-        float3 reflection = normalize(2 * lightIntensity * input.normal - lightDir);
-        specular = pow(saturate(dot(reflection, input.viewDirection)), specularPower);
-    }
+    //if (lightIntensity > 0.0f)
+    //{
+    //    color += (diffuseColor * lightIntensity);
+    //    color = saturate(color);
+    //    float3 reflection = normalize(2 * lightIntensity * input.normal - lightDir);
+    //    specular = pow(saturate(dot(reflection, input.viewDirection)), specularPower);
+    //}
     
-    color = color * textureColor;
-    color = saturate(color + specular);
+    //color = color * textureColor;
+    //color = saturate(color + specular);
     
+    float4 color = shaderTexture.Sample(SampleType, input.uv);
     return color;
 }

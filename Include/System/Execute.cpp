@@ -86,12 +86,13 @@ void Execute::Set3DObject()
 	#pragma endregion
 
 	#pragma region Texture Setting for baseMesh.fbx
-	crusaderKnight->childs[1]->childs[0]->GetComponent<SkinnedMeshRenderer>()->SetTexturePath("Resource/GameObject/Crusader knight/textures/mech_Albedo.png");
-
-	for (auto i : crusaderKnight->childs[0]->childs[0]->childs)
+	for (auto i : crusaderKnight->GetComponentsInAllChildren<SkinnedMeshRenderer>())
 	{
-		i->childs[0]->GetComponent<SkinnedMeshRenderer>()->SetTexturePath("Resource/GameObject/Crusader knight/textures/crusader body_Albedopng.png");
+		if (i->name == "crusader_body:Group15932")
+			i->SetTexturePath("Resource/GameObject/Crusader knight/textures/crusader body_Albedopng.png");
 	}
+	
+	//crusaderKnight->childs[1]->childs[0]->GetComponent<SkinnedMeshRenderer>()->SetTexturePath("Resource/GameObject/Crusader knight/textures/mech_Albedo.png");
 	#pragma endregion
 }
 

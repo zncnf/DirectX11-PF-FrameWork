@@ -40,7 +40,7 @@ void Animator::PlayAnimationWithClipName(std::string clipName)
 	}
 }
 
-UINT Animator::FindScaling(float AnimationTime, const aiNodeAnim * pNodeAnim)
+UINT Animator::FindScaling(double AnimationTime, const aiNodeAnim * pNodeAnim)
 {
 	assert(pNodeAnim->mNumScalingKeys > 0);
 
@@ -53,7 +53,7 @@ UINT Animator::FindScaling(float AnimationTime, const aiNodeAnim * pNodeAnim)
 	return 0;
 }
 
-UINT Animator::FindRotation(float AnimationTime, const aiNodeAnim * pNodeAnim)
+UINT Animator::FindRotation(double AnimationTime, const aiNodeAnim * pNodeAnim)
 {
 	assert(pNodeAnim->mNumRotationKeys > 0);
 
@@ -66,7 +66,7 @@ UINT Animator::FindRotation(float AnimationTime, const aiNodeAnim * pNodeAnim)
 	return 0;
 }
 
-UINT Animator::FindPosition(float AnimationTime, const aiNodeAnim * pNodeAnim)
+UINT Animator::FindPosition(double AnimationTime, const aiNodeAnim * pNodeAnim)
 {
 	for (UINT i = 0; i < pNodeAnim->mNumPositionKeys - 1; i++) {
 		if (AnimationTime < (float)pNodeAnim->mPositionKeys[i + 1].mTime) {
@@ -77,7 +77,7 @@ UINT Animator::FindPosition(float AnimationTime, const aiNodeAnim * pNodeAnim)
 	return 0;
 }
 
-void Animator::CalcInterpolatedScaling(aiVector3D & Out, float AnimationTime, const aiNodeAnim * pNodeAnim)
+void Animator::CalcInterpolatedScaling(aiVector3D & Out, double AnimationTime, const aiNodeAnim * pNodeAnim)
 {
 	if (pNodeAnim->mNumScalingKeys == 1) {
 		Out = pNodeAnim->mScalingKeys[0].mValue;
@@ -99,7 +99,7 @@ void Animator::CalcInterpolatedScaling(aiVector3D & Out, float AnimationTime, co
 	Out = Start + Factor * Delta;
 }
 
-void Animator::CalcInterpolatedRotation(aiQuaternion & Out, float AnimationTime, const aiNodeAnim * pNodeAnim)
+void Animator::CalcInterpolatedRotation(aiQuaternion & Out, double AnimationTime, const aiNodeAnim * pNodeAnim)
 {
 	if (pNodeAnim->mNumRotationKeys == 1) {
 		Out = pNodeAnim->mRotationKeys[0].mValue;
@@ -119,7 +119,7 @@ void Animator::CalcInterpolatedRotation(aiQuaternion & Out, float AnimationTime,
 	Out = Out.Normalize();
 }
 
-void Animator::CalcInterpolatedPosition(aiVector3D & Out, float AnimationTime, const aiNodeAnim * pNodeAnim)
+void Animator::CalcInterpolatedPosition(aiVector3D & Out, double AnimationTime, const aiNodeAnim * pNodeAnim)
 {
 	if (pNodeAnim->mNumPositionKeys == 1) {
 		Out = pNodeAnim->mPositionKeys[0].mValue;
@@ -151,7 +151,7 @@ const aiNodeAnim * Animator::FindNodeAnim(const aiAnimation * pAnimation, const 
 	return nullptr;
 }
 
-void Animator::ReadNodeHeirarchy(float AnimationTime, const aiNode * pNode, const aiMatrix4x4 & ParentTransform)
+void Animator::ReadNodeHeirarchy(double AnimationTime, const aiNode * pNode, const aiMatrix4x4 & ParentTransform)
 {
 	NodeName = pNode->mName.C_Str();
 
@@ -198,6 +198,9 @@ void Animator::ReadNodeHeirarchy(float AnimationTime, const aiNode * pNode, cons
 				UINT BoneIndex = renderers[i]->boneMapping.at(NodeName);
 				const aiMatrix4x4 m = m_GlobalInverseTransform * GlobalTransformation * renderers[i]->boneInfo.at(BoneIndex).boneOffset;
 				renderers[i]->boneInfo.at(BoneIndex).finalTransformation = m;
+
+				/*cout << "boneIndex : " << BoneIndex << endl;
+				std::cout << "NodeName : " << NodeName << "BoneOffset : " << renderers[i]->boneInfo.at(BoneIndex).boneOffset.a1 << std::endl;*/
 			}
 		}
 	}
