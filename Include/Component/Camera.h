@@ -10,7 +10,12 @@ public:
 	virtual void Init();
 	virtual void Update();
 
+public:
+	void Pitch(float angle);
+	void RotateY(float angle);
+
 private:
 	void CameraController();
+	void UpdateViewMatrix();
 };
 
