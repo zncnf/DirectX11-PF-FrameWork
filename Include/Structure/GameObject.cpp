@@ -22,7 +22,8 @@ GameObject::GameObject(ObjectType objectType, string filepath)
 	case ObjectType::Object3D:
 	{
 		active = true;
-		pScene = aiImportFile(filepath.c_str(), aiProcess_ConvertToLeftHanded | aiProcess_Triangulate);
+		pScene = aiImportFile(filepath.c_str(), ASSIMP_LOAD_FLAG_1);
+
 		name = pScene->mRootNode->mName.C_Str();
 		directory = filepath.substr(0, filepath.find_last_of("/"));		
 		
@@ -30,16 +31,19 @@ GameObject::GameObject(ObjectType objectType, string filepath)
 
 		if (pScene->mRootNode->mNumMeshes > 0)
 		{
-			if (pScene->HasAnimations())
+			for (UINT i = 0; i < pScene->mRootNode->mNumMeshes; i++)
 			{
-				this->AddComponent(new SkinnedMeshRenderer(this, pScene, pScene->mRootNode));
-			}
-			else
-			{
-				/*this->AddComponent(new MeshRenderer(this, pScene, pScene->mRootNode));
-				this->AddComponent(new MeshFilter(this, pScene, pScene->mRootNode));*/
-
-				this->AddComponent(new SkinnedMeshRenderer(this, pScene, pScene->mRootNode));
+				if (pScene->mMeshes[pScene->mRootNode->mMeshes[i]]->HasBones())
+				{
+					this->AddComponent(new SkinnedMeshRenderer(this, pScene, pScene->mRootNode));
+					break;
+				}
+				else
+				{
+					this->AddComponent(new MeshRenderer(this, pScene, pScene->mRootNode));
+					this->AddComponent(new MeshFilter(this, pScene, pScene->mRootNode));
+					break;
+				}
 			}
 		}
 
@@ -82,16 +86,19 @@ GameObject::GameObject(aiNode * _node, const aiScene * _pScene, string filepath)
 
 	if (_node->mNumMeshes > 0)
 	{
-		if (_pScene->HasAnimations())
-		{			
-			this->AddComponent(new SkinnedMeshRenderer(this, _pScene, _node));
-		}
-		else
+		for (UINT i = 0; i < _node->mNumMeshes; i++)
 		{
-		/*	this->AddComponent(new MeshRenderer(this, _pScene, _node));
-			this->AddComponent(new MeshFilter(this, _pScene, _node));*/
-
-			this->AddComponent(new SkinnedMeshRenderer(this, _pScene, _node));
+			if (_pScene->mMeshes[_node->mMeshes[i]]->HasBones())
+			{
+				this->AddComponent(new SkinnedMeshRenderer(this, _pScene, _node));
+				break;
+			}
+			else
+			{
+				this->AddComponent(new MeshRenderer(this, _pScene, _node));
+				this->AddComponent(new MeshFilter(this, _pScene, _node));
+				break;
+			}
 		}
 	}
 
@@ -163,6 +170,32 @@ void GameObject::Update()
 void GameObject::AddComponent(Component * _component)
 {
 	components.push_back(_component);
+}
+
+GameObject * GameObject::GetRootObject()
+{
+	if (this->parent)
+	{
+		return ParentProcess(this->parent);
+	}
+	else
+	{
+		return this;
+	}
+}
+
+GameObject* GameObject::ParentProcess(GameObject * object)
+{
+	if (object->parent)
+	{
+		ParentProcess(object->parent);
+	}
+	else
+	{
+		return object;
+	}
+
+	return nullptr;
 }
 
 void GameObject::AddChild(GameObject * _gameObject)

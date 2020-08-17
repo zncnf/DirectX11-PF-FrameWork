@@ -64,21 +64,35 @@ void Execute::Set3DObject()
 	camera->GetComponent<Transform>()->SetWorldPosition(D3DXVECTOR3(0, 150, -350));
 
 	AnimationClip* attack1 = new AnimationClip("attack1", "Resource/GameObject/Crusader knight/animation/crusader@atack1.fbx");
+	AnimationClip* death1  = new AnimationClip("death1",  "Resource/GameObject/Crusader knight/animation/crusader@death1.fbx");
+	AnimationClip* gethit  = new AnimationClip("gethit",  "Resource/GameObject/Crusader knight/animation/crusader@gethit.fbx");
+	AnimationClip* idle1   = new AnimationClip("idle1",   "Resource/GameObject/Crusader knight/animation/crusader@idle1.fbx");
+	AnimationClip* jump    = new AnimationClip("jump",    "Resource/GameObject/Crusader knight/animation/crusader@jump.fbx");
+	AnimationClip* run     = new AnimationClip("run",     "Resource/GameObject/Crusader knight/animation/crusader@run.fbx");
+	AnimationClip* walk    = new AnimationClip("walk",    "Resource/GameObject/Crusader knight/animation/crusader@walk.fbx");
 
 	AnimationController* controller = new AnimationController();
 	controller->AddAnimationClip(attack1);
+	controller->AddAnimationClip(death1);
+	controller->AddAnimationClip(gethit);
+	controller->AddAnimationClip(idle1);
+	controller->AddAnimationClip(jump);
+	controller->AddAnimationClip(run);
+	controller->AddAnimationClip(walk);	
 
 	crusaderKnight = new GameObject(ObjectType::Object3D, "Resource/GameObject/Crusader knight/Base mesh/crusader base mesh.fbx");
 	crusaderKnight->AddComponent(new Animator(crusaderKnight));
 	crusaderKnight->GetComponent<Animator>()->AddController(controller);
-	crusaderKnight->Init();
+	crusaderKnight->Init();	
 
-/*	crusaderKnight->childs[0]->childs[0]->childs[0]->childs[0]->GetComponent<SkinnedMeshRenderer>()->SetTexturePath("Resource/GameObject/Crusader knight/textures/mech_Albedo.png");
-
-	for (auto i : crusaderKnight->childs[1]->childs[0]->childs)
+	//파일자체 문제로 Assimp 가 텍스쳐 경로를 원할하게 받아오지못하여 수동으로 셋팅해줌.
+	for (auto i : crusaderKnight->GetComponentsInAllChildren<SkinnedMeshRenderer>())
 	{
-		i->childs[0]->GetComponent<SkinnedMeshRenderer>()->SetTexturePath("Resource/GameObject/Crusader knight/textures/crusader body_Albedopng.png");
-	}*/	
+		if (i->name == "mech:RetopoGroup1") // 칼
+			i->SetTexturePath("Resource/GameObject/Crusader knight/textures/mech_Albedo.png");
+		else
+			i->SetTexturePath("Resource/GameObject/Crusader knight/textures/crusader body_Albedopng.png");
+	}
 }
 
 void Execute::Set2DObject()
@@ -101,11 +115,14 @@ void Execute::Set2DObject()
 
 void Execute::Render3D()
 {
+	if (InputManager::GetInstance()->KeyboardDownOnce(DIK_P))
+	{
+		crusaderKnight->GetComponent<Animator>()->PlayAnimationWithClipName("attack1");
+	}
+
 	directionalLight->Update();
 	camera->Update();
 	crusaderKnight->Update();
-
-	crusaderKnight->GetComponent<Transform>()->Rotate(D3DXVECTOR3(0, 1, 0));
 }
 
 void Execute::Render2D()

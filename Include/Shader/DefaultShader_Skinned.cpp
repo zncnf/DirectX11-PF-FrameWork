@@ -17,8 +17,10 @@ void DefaultShader_Skinned::Init()
 	ID3DBlob* vertexShaderBuffer = nullptr;
 	ID3DBlob* pixelShaderBuffer = nullptr;
 
-	D3DX11CompileFromFileA("Resource/Shaders/DefaultShader_Skinned.hlsl", NULL, NULL, "VS", "vs_5_0", 0, 0, NULL, &vertexShaderBuffer, NULL, NULL);
-	D3DX11CompileFromFileA("Resource/Shaders/DefaultShader_Skinned.hlsl", NULL, NULL, "PS", "ps_5_0", 0, 0, NULL, &pixelShaderBuffer, NULL, NULL);
+	const D3D_SHADER_MACRO skinnedDefines[] = { "SKINNED", "1", NULL, NULL};
+
+	D3DX11CompileFromFileA("Resource/Shaders/DefaultShader_Skinned.hlsl", skinnedDefines, nullptr, "VS", "vs_5_0", 0, 0, nullptr, &vertexShaderBuffer, nullptr, nullptr);
+	D3DX11CompileFromFileA("Resource/Shaders/DefaultShader_Skinned.hlsl", nullptr, nullptr, "PS", "ps_5_0", 0, 0, nullptr, &pixelShaderBuffer, nullptr, nullptr);
 
 	DirectXManager::GetInstance()->GetDevice()->CreateVertexShader(vertexShaderBuffer->GetBufferPointer(), vertexShaderBuffer->GetBufferSize(), NULL, &VS_Shader);
 	DirectXManager::GetInstance()->GetDevice()->CreatePixelShader(pixelShaderBuffer->GetBufferPointer(), pixelShaderBuffer->GetBufferSize(), NULL, &PS_Shader);
@@ -68,8 +70,8 @@ void DefaultShader_Skinned::Init()
 		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
 		{"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
 		{"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
-		{"BONEIDS", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
-		{"WEIGHTS", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"BONEIDS", 0, DXGI_FORMAT_R32G32B32A32_UINT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"WEIGHTS", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},		
 	};
 
 	DirectXManager::GetInstance()->GetDevice()->CreateInputLayout(input_desc, 5, vertexShaderBuffer->GetBufferPointer(), vertexShaderBuffer->GetBufferSize(), &inputLayout);
@@ -78,7 +80,7 @@ void DefaultShader_Skinned::Init()
 	ReleaseCOM(pixelShaderBuffer);
 }
 
-void DefaultShader_Skinned::Update(D3DXMATRIX world, D3DXMATRIX view, D3DXMATRIX projection, D3DXVECTOR4 diffuseColor, D3DXVECTOR4 ambientColor, D3DXVECTOR4 specularColor, float specularPower,  std::vector<struct BoneInfo>* boneInfo, int count)
+void DefaultShader_Skinned::Update(D3DXMATRIX world, D3DXMATRIX view, D3DXMATRIX projection, D3DXVECTOR4 diffuseColor, D3DXVECTOR4 ambientColor, D3DXVECTOR4 specularColor, float specularPower,  std::vector<struct BoneInfo>* boneInfo)
 {
 	D3DXMatrixTranspose(&world, &world);
 	D3DXMatrixTranspose(&view, &view);
@@ -162,7 +164,7 @@ void DefaultShader_Skinned::Update(D3DXMATRIX world, D3DXMATRIX view, D3DXMATRIX
 	}
 
 	DirectXManager::GetInstance()->GetDeviceContext()->Unmap(boneBuffer, 0);
-	DirectXManager::GetInstance()->GetDeviceContext()->PSSetConstantBuffers(2, 1, &boneBuffer);
+	DirectXManager::GetInstance()->GetDeviceContext()->VSSetConstantBuffers(2, 1, &boneBuffer);
 #pragma endregion
 
 #pragma region Render
@@ -170,13 +172,13 @@ void DefaultShader_Skinned::Update(D3DXMATRIX world, D3DXMATRIX view, D3DXMATRIX
 	DirectXManager::GetInstance()->GetDeviceContext()->IASetInputLayout(inputLayout);
 
 	//VertexShader
-	DirectXManager::GetInstance()->GetDeviceContext()->VSSetShader(VS_Shader, NULL, 0);
+	DirectXManager::GetInstance()->GetDeviceContext()->VSSetShader(VS_Shader, nullptr, 0);
 	DirectXManager::GetInstance()->GetDeviceContext()->VSSetConstantBuffers(0, 1, &matrixBuffer);
 	DirectXManager::GetInstance()->GetDeviceContext()->VSSetConstantBuffers(1, 1, &cameraBuffer);
 	DirectXManager::GetInstance()->GetDeviceContext()->VSSetConstantBuffers(2, 1, &boneBuffer);
 
 	//PixelShader
-	DirectXManager::GetInstance()->GetDeviceContext()->PSSetShader(PS_Shader, NULL, 0);
+	DirectXManager::GetInstance()->GetDeviceContext()->PSSetShader(PS_Shader, nullptr, 0);
 	DirectXManager::GetInstance()->GetDeviceContext()->PSSetConstantBuffers(0, 1, &lightBuffer);
 #pragma endregion
 }

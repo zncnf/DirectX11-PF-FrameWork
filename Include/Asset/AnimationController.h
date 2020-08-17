@@ -9,8 +9,9 @@ public:
 
 public:
 	void AddAnimationClip(AnimationClip* clip);
+	AnimationClip* GetClipWithName(std::string clipName);
 	void ShowClipList();
-public:
+private:
 	std::map<std::string, AnimationClip*> clips;
 };
 

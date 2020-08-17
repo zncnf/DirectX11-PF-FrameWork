@@ -31,6 +31,9 @@ public:
 
 	aiMaterial* pMaterial;
 
+	std::vector<BoneInfo> boneInfo;
+	std::map<std::string, UINT> boneMapping;
+
 private:
 	const aiScene* pScene = nullptr;
 	aiMesh*  pMesh = nullptr;
@@ -49,8 +52,6 @@ private:
 	std::vector<DWORD> _indices;
 
 	std::vector<SkinDrawData> skinDrawData;
-	std::vector<BoneInfo> boneInfo;
-	std::map<std::string, UINT> boneMapping;
 
 	VertexType_SkindMesh* vertices;
 	UINT* indices;

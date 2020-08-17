@@ -9,8 +9,11 @@ SkinnedMeshRenderer::SkinnedMeshRenderer(GameObject * _object, const aiScene * _
 	node       = _node;
 
 	indexoffset = 0;
+	//boneCount = 0;
 
-	pShader = ResourceManager::GetInstance()->GetShader("DefaultShader_Skinned");
+	name = _node->mName.data;
+
+	pShader = ResourceManager::GetInstance()->GetShader("DefaultShader_Specular");
 }
 
 SkinnedMeshRenderer::~SkinnedMeshRenderer()
@@ -23,6 +26,14 @@ SkinnedMeshRenderer::~SkinnedMeshRenderer()
 
 void SkinnedMeshRenderer::Init()
 {
+	for (UINT i = 0; i < node->mNumMeshes; i++)
+	{
+		vertexCount += pScene->mMeshes[node->mMeshes[i]]->mNumVertices;
+		indexCount += pScene->mMeshes[node->mMeshes[i]]->mNumFaces * 3;
+	}
+
+	_bones.resize(vertexCount);
+
 	ProcessNode(node, pScene);
 
 	vertices = new VertexType_SkindMesh[vertexCount];
@@ -39,7 +50,7 @@ void SkinnedMeshRenderer::Init()
 	}
 
 	D3D11_BUFFER_DESC vertexBufferDesc;
-	vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	vertexBufferDesc.Usage = D3D11_USAGE_IMMUTABLE;
 	vertexBufferDesc.ByteWidth = sizeof(VertexType_SkindMesh) * vertexCount;
 	vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	vertexBufferDesc.CPUAccessFlags = 0;
@@ -55,7 +66,7 @@ void SkinnedMeshRenderer::Init()
 		return;
 
 	D3D11_BUFFER_DESC indexBufferDesc;
-	indexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	indexBufferDesc.Usage = D3D11_USAGE_IMMUTABLE;
 	indexBufferDesc.ByteWidth = sizeof(UINT) * indexCount;
 	indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
 	indexBufferDesc.CPUAccessFlags = 0;
@@ -107,7 +118,7 @@ void SkinnedMeshRenderer::Update()
 		D3DXVECTOR4 specular(specularColor.r, specularColor.g, specularColor.b, specularColor.a);
 
 		pShader->Update(gameObject->transform->worldMatrix, GameManager::GetInstance()->viewMatrix, GameManager::GetInstance()->projectionMatrix,
-			diffuse, ambient, specular, 32.0f, &boneInfo, _indices.size());
+			diffuse, ambient, specular, 32.0f, &boneInfo);
 
 		DirectXManager::GetInstance()->GetDeviceContext()->PSSetShaderResources(0, 1, &m_ShaderResource);
 		DirectXManager::GetInstance()->GetDeviceContext()->PSSetSamplers(0, 1, &m_SampleState);
@@ -143,12 +154,7 @@ void SkinnedMeshRenderer::ProcessNode(aiNode * node, const aiScene * scene)
 
 void SkinnedMeshRenderer::ProcessMesh(aiMesh * mesh, const aiScene * scene)
 {
-	vertexCount += mesh->mNumVertices;
-	indexCount += mesh->mNumFaces * 3;
-
-	_bones.resize(vertexCount);
-
-	ProcessBone(mesh, scene);
+	ProcessBone(mesh, scene);	
 
 	for (UINT i = 0; i < mesh->mNumVertices; i++)
 	{
@@ -158,21 +164,26 @@ void SkinnedMeshRenderer::ProcessMesh(aiMesh * mesh, const aiScene * scene)
 		vertex.position.y = mesh->mVertices[i].y;
 		vertex.position.z = mesh->mVertices[i].z;
 
-		if (mesh->mTextureCoords[0])
+		if (mesh->HasTextureCoords(0))
 		{
 			vertex.texture.x = (float)mesh->mTextureCoords[0][i].x;
-			vertex.texture.y = (float)mesh->mTextureCoords[0][i].y;
+			vertex.texture.y = (float)mesh->mTextureCoords[0][i].y;			
+		}
+		else
+		{
+			vertex.texture.x = 0.0f;
+			vertex.texture.y = 0.0f;
+		}
+
+		for (int j = 0; j < NUM_BONES_PER_VERTEX; ++j)
+		{
+			vertex.boneID[j] = _bones[i].Ids[j];
+			vertex.weights[j] = _bones[i].Weights[j];
 		}
 
 		vertex.normal.x = mesh->mNormals[i].x;
 		vertex.normal.y = mesh->mNormals[i].y;
 		vertex.normal.z = mesh->mNormals[i].z;
-
-		for (int j = 0; j < 4; ++j)
-		{
-			vertex.boneID[j] = _bones[i].Ids[j];
-			vertex.weights[j] = _bones[i].Weights[j];
-		}
 
 		_vertices.push_back(vertex);
 	}
@@ -213,29 +224,24 @@ void SkinnedMeshRenderer::ProcessMesh(aiMesh * mesh, const aiScene * scene)
 void SkinnedMeshRenderer::ProcessBone(aiMesh * mesh, const aiScene * scene)
 {
 	for (UINT i = 0; i < mesh->mNumBones; i++)
-	{
-		UINT boneIndex = 0;
-		std::string boneName(mesh->mBones[i]->mName.data);
+	{		
+		std::string boneName = mesh->mBones[i]->mName.C_Str();
 
 		if (boneMapping.find(boneName) == boneMapping.end())
-		{
-			boneIndex = boneCount;
-			boneCount++;
+		{					
 			BoneInfo bi;
+			bi.boneOffset = mesh->mBones[i]->mOffsetMatrix;
 			boneInfo.push_back(bi);
-			boneInfo[boneIndex].boneOffset = mesh->mBones[i]->mOffsetMatrix;
-			boneMapping[boneName] = boneIndex;
+			boneMapping[boneName] = i;
 		}
 		else
-		{
-			boneIndex = boneMapping[boneName];
-		}
+			i = boneMapping[boneName];			
+
 
 		for (UINT j = 0; j < mesh->mBones[i]->mNumWeights; j++)
 		{
-			//UINT vertexID = skinDrawData[]
 			float weight = mesh->mBones[i]->mWeights[j].mWeight;
-			_bones[mesh->mBones[i]->mWeights[j].mVertexId].AddBoneData(boneIndex, weight);
+			_bones[mesh->mBones[i]->mWeights[j].mVertexId].AddBoneData(i, weight);	
 		}
 	}
 }

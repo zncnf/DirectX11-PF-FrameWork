@@ -6,8 +6,10 @@ struct vertexInput
     float4 position : POSITION0;
     float2 uv : TEXCOORD0;
     float3 normal : NORMAL0;
+    #ifdef SKINNED
     uint4 boneids : BONEIDS0;
     float4 weights : WEIGHTS0;
+    #endif
 };
 
 struct PixelInput
@@ -47,31 +49,38 @@ cbuffer LightBuffer : register(b0)
 
 PixelInput VS(vertexInput Input)
 {
-    PixelInput pixelout;
+    PixelInput pixelout = (PixelInput)0;
 
-    matrix BoneTransform = bones[Input.boneids[0]] * Input.weights[0];
+    matrix BoneTransform;
+    
+    #ifdef SKINNED
+    BoneTransform = bones[Input.boneids[0]] * Input.weights[0];
     BoneTransform += bones[Input.boneids[1]] * Input.weights[1];
     BoneTransform += bones[Input.boneids[2]] * Input.weights[2];
     BoneTransform += bones[Input.boneids[3]] * Input.weights[3];
+    #endif
 
-    Input.position.w = 1.f;
+    Input.position.w = 1.0f;
 
-    pixelout.position = mul(Input.position, BoneTransform);
+    pixelout.position = mul(Input.position, world);
     
+    #ifdef SKINNED
+    pixelout.position = mul(Input.position, BoneTransform);
     pixelout.position = mul(pixelout.position, world);
+    #endif    
+
     pixelout.position = mul(pixelout.position, view);
     pixelout.position = mul(pixelout.position, proj);
 
     pixelout.uv = Input.uv;
-	// 월드 행렬에 대해서만 법선 벡터를 계산합니다.
+    
     pixelout.normal = mul(Input.normal, (float3x3) world);
-	// 법선 벡터를 정규화합니다.
     pixelout.normal = normalize(pixelout.normal);
     
-    //float4 worldPosition = mul(Input.position, world);
+    float4 worldPosition = mul(Input.position, world);
     
-    //pixelout.viewDirection = cameraPosition.xyz - worldPosition.xyz;
-    //pixelout.viewDirection = normalize(pixelout.viewDirection);
+    pixelout.viewDirection = cameraPosition.xyz - worldPosition.xyz;
+    pixelout.viewDirection = normalize(pixelout.viewDirection);
     
     return pixelout;
 }

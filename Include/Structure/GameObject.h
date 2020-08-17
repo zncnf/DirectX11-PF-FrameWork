@@ -29,11 +29,18 @@ public:
 	template<typename T>
 	T* GetComponent();
 	template<typename T>
-	vector<GameObject*> GetComponentsInChildren();
-
+	vector<T*> GetComponentsInChildren();
+	template<typename T>
+	vector<T*> GetComponentsInAllChildren();
+	GameObject* GetRootObject();
 	void AddChild(GameObject* _gameObject);
+
+private:
+	template<typename T>
+	void ChildProcess(GameObject* object, vector<T*> & vec);
+	GameObject* ParentProcess(GameObject* object);
+
 public:
-	GameObject* gameObject       = nullptr;
 	GameObject* parent           = nullptr;
 	Transform* transform         = nullptr;
 	RectTransform* rectTransform = nullptr;
@@ -60,18 +67,45 @@ inline T * GameObject::GetComponent()
 	return nullptr;
 }
 
+//자기 자식의 오브젝트중 형식매개변수로 들어온 컴포넌트타입을 참조해 백터에 담아 반환합니다.
 template<typename T>
-inline vector<GameObject*> GameObject::GetComponentsInChildren()
+inline vector<T*> GameObject::GetComponentsInChildren()
 {
-	vector<GameObject*> rChilds;
+	vector<T*> childsComponents;
 
 	for (auto i : this->childs)
 	{
 		if (i->GetComponent<T>())
 		{
-			rChilds.push_back(i);
+			childsComponents.push_back(i->GetComponent<T>());
 		}
 	}
 
-	return rChilds;
+	return childsComponents;
+}
+
+//자기의 모든 계층구조를 탐색해 형식매개변수로 들어온 컴포넌트 타입을 참조해 백터에 담아 반환합니다.
+template<typename T>
+inline vector<T*> GameObject::GetComponentsInAllChildren()
+{
+	vector<T*> allChildsComponents;
+
+	ChildProcess(this, allChildsComponents);
+
+	return allChildsComponents;
+}
+
+//모든 자식 계층구조를 탐색하기위한 재귀함수
+template<typename T>
+inline void GameObject::ChildProcess(GameObject * object, vector<T*>& vec)
+{
+	for (UINT i = 0; i < object->childs.size(); i++)
+	{
+		if (object->childs[i]->GetComponent<T>())
+		{
+			vec.push_back(object->childs[i]->GetComponent<T>());
+		}
+
+		ChildProcess(object->childs[i], vec);
+	}
 }

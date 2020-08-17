@@ -3,7 +3,7 @@
 Open Asset Import Library (assimp)
 ---------------------------------------------------------------------------
 
-Copyright (c) 2006-2018, assimp team
+Copyright (c) 2006-2019, assimp team
 
 
 
@@ -48,7 +48,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef AI_ASSIMP_H_INC
 #define AI_ASSIMP_H_INC
 
-#include "assimp/types.h"
+#include <assimp/types.h>
 #include "importerdesc.h"
 
 #ifdef __cplusplus

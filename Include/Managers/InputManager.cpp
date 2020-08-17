@@ -130,12 +130,48 @@ bool InputManager::KeyboardDown(int inputType)
 	return false;
 }
 
+bool InputManager::KeyboardDownOnce(int inputType)
+{
+	if (m_keyboardState[inputType] & 0x80)
+	{
+		if (m_prevKeyboardState[inputType])
+			return false;
+		else
+		{
+			m_prevKeyboardState[inputType] = 1;
+			return true;
+		}
+	}
+	else
+	{
+		m_prevKeyboardState[inputType] = 0;
+		return false;
+	}
+}
+
 bool InputManager::KeyboardUp(int inputType)
 {
 	if (m_keyboardState[inputType] & 0x80)
 		return false;
 
 	return true;
+}
+
+bool InputManager::KeyboardUpOnce(int inputType)
+{
+	if (m_keyboardState[inputType] & 0x80)
+	{
+		m_prevKeyboardState2[inputType] = 1;
+		return false;
+	}
+
+	if (!(m_keyboardState[inputType] & 0x80) && m_prevKeyboardState2[inputType] == 1)
+	{
+		m_prevKeyboardState2[inputType] = 0;
+		return true;
+	}
+
+	return false;
 }
 
 bool InputManager::MouseDown(int inputType)
