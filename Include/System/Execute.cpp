@@ -115,7 +115,10 @@ void Execute::Set2DObject()
 
 void Execute::Render3D()
 {
-	crusaderKnight->GetComponent<Animator>()->PlayAnimationWithClipName("attack1");
+	if (InputManager::GetInstance()->KeyboardDownOnce(DIK_P))
+	{
+		crusaderKnight->GetComponent<Animator>()->PlayAnimationWithClipName("attack1");
+	}
 
 	directionalLight->Update();
 	camera->Update();

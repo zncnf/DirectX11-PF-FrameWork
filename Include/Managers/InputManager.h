@@ -19,7 +19,9 @@ public:
 	bool IsEscapePressed();
 	POINT GetMouseLocation();
 	bool KeyboardDown(int inputType);
+	bool KeyboardDownOnce(int inputType);
 	bool KeyboardUp(int inputType);
+	bool KeyboardUpOnce(int inputType);
 	bool MouseDown(int inputType);
 	bool MouseDownOnce(int inputType);
 	bool MouseUp(int inputType);
@@ -38,6 +40,8 @@ private:
 	IDirectInputDevice8* m_mouse;
 
 	unsigned char m_keyboardState[256];
+	unsigned char m_prevKeyboardState[256];
+	unsigned char m_prevKeyboardState2[256];
 
 
 	int m_screenWidth, m_screenHeight;

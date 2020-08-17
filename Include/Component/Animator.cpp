@@ -7,6 +7,9 @@ Animator::Animator(GameObject* _object)
 	gameObject = _object;
 
 	TimeInSeconds = 0.f;
+
+	animationStop = true;
+	animationPlaying = false;
 }
 
 Animator::~Animator()
@@ -20,6 +23,10 @@ void Animator::Init()
 
 void Animator::Update()
 {
+	if (!animationStop)
+	{
+		Play(clip->pScene->mRootNode);
+	}
 }
 
 void Animator::AddController(AnimationController * _controller)
@@ -29,14 +36,26 @@ void Animator::AddController(AnimationController * _controller)
 
 void Animator::PlayAnimationWithClipName(std::string clipName)
 {
+	if (animationPlaying)
+	{
+		TimeInSeconds = 0;
+		return;
+	}
+
 	clip = controller->GetClipWithName(clipName);
 
-	if(clip)
+	if (clip)
 	{
 		m_GlobalInverseTransform = clip->pScene->mRootNode->mTransformation.Inverse();
-		m_Animation = clip->pScene->mAnimations[0];		
+		m_Animation = clip->pScene->mAnimations[0];
 
-		Play(clip->pScene->mRootNode);
+		animationStop = false;
+		animationPlaying = true;
+
+		for (auto i : gameObject->GetComponentsInAllChildren<SkinnedMeshRenderer>())
+		{
+			i->SetShader(ResourceManager::GetInstance()->GetShader("DefaultShader_Skinned"));
+		}
 	}
 }
 
@@ -89,7 +108,7 @@ void Animator::CalcInterpolatedScaling(aiVector3D & Out, double AnimationTime, c
 
 	//assert(NextScalingIndex < pNodeAnim->mNumScalingKeys);
 	float DeltaTime = (float)(pNodeAnim->mScalingKeys[NextScalingIndex].mTime - pNodeAnim->mScalingKeys[ScalingIndex].mTime);
-	float Factor = (AnimationTime - (float)pNodeAnim->mScalingKeys[ScalingIndex].mTime) / DeltaTime;
+	float Factor = ((float)AnimationTime - (float)pNodeAnim->mScalingKeys[ScalingIndex].mTime) / DeltaTime;
 
 	//assert(Factor >= 0.0f && Factor <= 1.0f);
 	const aiVector3D& Start = pNodeAnim->mScalingKeys[ScalingIndex].mValue;
@@ -110,7 +129,7 @@ void Animator::CalcInterpolatedRotation(aiQuaternion & Out, double AnimationTime
 	UINT NextRotationIndex = (RotationIndex + 1);
 	//assert(NextRotationIndex < pNodeAnim->mNumRotationKeys);
 	float DeltaTime = (float)(pNodeAnim->mRotationKeys[NextRotationIndex].mTime - pNodeAnim->mRotationKeys[RotationIndex].mTime);
-	float Factor = (AnimationTime - (float)pNodeAnim->mRotationKeys[RotationIndex].mTime) / DeltaTime;
+	float Factor = ((float)AnimationTime - (float)pNodeAnim->mRotationKeys[RotationIndex].mTime) / DeltaTime;
 	//assert(Factor >= 0.0f && Factor <= 1.0f);
 	const aiQuaternion& StartRotationQ = pNodeAnim->mRotationKeys[RotationIndex].mValue;
 	const aiQuaternion& EndRotationQ = pNodeAnim->mRotationKeys[NextRotationIndex].mValue;
@@ -131,7 +150,7 @@ void Animator::CalcInterpolatedPosition(aiVector3D & Out, double AnimationTime, 
 
 	//assert(NextPositionIndex < pNodeAnim->mNumPositionKeys);
 	float DeltaTime = (float)(pNodeAnim->mPositionKeys[NextPositionIndex].mTime - pNodeAnim->mPositionKeys[PositionIndex].mTime);
-	float Factor = (AnimationTime - (float)pNodeAnim->mPositionKeys[PositionIndex].mTime) / DeltaTime;
+	float Factor = ((float)AnimationTime - (float)pNodeAnim->mPositionKeys[PositionIndex].mTime) / DeltaTime;
 	//assert(Factor >= 0.0f && Factor <= 1.0f);
 	const aiVector3D& Start = pNodeAnim->mPositionKeys[PositionIndex].mValue;
 	const aiVector3D& End = pNodeAnim->mPositionKeys[NextPositionIndex].mValue;
@@ -155,12 +174,7 @@ void Animator::ReadNodeHeirarchy(double AnimationTime, const aiNode * pNode, con
 {
 	NodeName = pNode->mName.C_Str();
 
-	aiMatrix4x4 NodeTransformation;
-
-	if (pNode->mParent)
-		NodeTransformation = pNode->mParent->mTransformation;
-	else
-		NodeTransformation = pNode->mTransformation;
+	aiMatrix4x4 NodeTransformation = pNode->mTransformation;
 
 	const aiNodeAnim* pNodeAnim = FindNodeAnim(m_Animation, NodeName);
 
@@ -188,7 +202,7 @@ void Animator::ReadNodeHeirarchy(double AnimationTime, const aiNode * pNode, con
 
 	for (UINT i = 0; i < renderers.size(); i++)
 	{
-		if (renderers[i]->boneMapping.find(NodeName) != renderers[i]->boneMapping.end()) // frame 历窍 何盒.
+		if (renderers[i]->boneMapping.find(NodeName) != renderers[i]->boneMapping.end()) // <- frame 历窍 何盒.
 		{
 			UINT BoneIndex = renderers[i]->boneMapping.at(NodeName);
 			const aiMatrix4x4 m = m_GlobalInverseTransform * GlobalTransformation * renderers[i]->boneInfo.at(BoneIndex).boneOffset;
@@ -207,12 +221,15 @@ void Animator::Play(const aiNode * _rootNode)
 
 	TimeInSeconds += GameManager::GetInstance()->gameTimer->DeltaTime() * clip->speed;
 
-	if (TimeInSeconds >= m_Animation->mDuration)
+	double AnimationTime = TimeInSeconds * m_Animation->mTicksPerSecond;
+
+	if (AnimationTime >= m_Animation->mDuration)
+	{
+		animationStop = true;
+		animationPlaying = false;
+		AnimationTime = 0;
 		TimeInSeconds = 0;
-
-	double TimeInTicks = TimeInSeconds * m_Animation->mTicksPerSecond;
-	double AnimationTime = fmod(TimeInTicks, m_Animation->mDuration);
-
+	}
 
 	ReadNodeHeirarchy(AnimationTime, _rootNode, Identity);
 }

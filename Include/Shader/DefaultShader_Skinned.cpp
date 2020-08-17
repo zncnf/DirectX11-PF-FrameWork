@@ -17,7 +17,9 @@ void DefaultShader_Skinned::Init()
 	ID3DBlob* vertexShaderBuffer = nullptr;
 	ID3DBlob* pixelShaderBuffer = nullptr;
 
-	D3DX11CompileFromFileA("Resource/Shaders/DefaultShader_Skinned.hlsl", nullptr, nullptr, "VS", "vs_5_0", 0, 0, nullptr, &vertexShaderBuffer, nullptr, nullptr);
+	const D3D_SHADER_MACRO skinnedDefines[] = { "SKINNED", "1", NULL, NULL};
+
+	D3DX11CompileFromFileA("Resource/Shaders/DefaultShader_Skinned.hlsl", skinnedDefines, nullptr, "VS", "vs_5_0", 0, 0, nullptr, &vertexShaderBuffer, nullptr, nullptr);
 	D3DX11CompileFromFileA("Resource/Shaders/DefaultShader_Skinned.hlsl", nullptr, nullptr, "PS", "ps_5_0", 0, 0, nullptr, &pixelShaderBuffer, nullptr, nullptr);
 
 	DirectXManager::GetInstance()->GetDevice()->CreateVertexShader(vertexShaderBuffer->GetBufferPointer(), vertexShaderBuffer->GetBufferSize(), NULL, &VS_Shader);

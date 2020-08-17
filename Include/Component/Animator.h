@@ -29,6 +29,9 @@ private:
 
 	AnimationClip* clip;
 
+	bool animationStop;
+	bool animationPlaying;
+
 	UINT FindScaling(double AnimationTime, const aiNodeAnim* pNodeAnim);
 	UINT FindRotation(double AnimationTime, const aiNodeAnim* pNodeAnim);
 	UINT FindPosition(double AnimationTime, const aiNodeAnim* pNodeAnim);

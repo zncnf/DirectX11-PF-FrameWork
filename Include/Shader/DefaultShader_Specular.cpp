@@ -16,8 +16,8 @@ void DefaultShader_Specular::Init()
 	ID3DBlob* vertexShaderBuffer = nullptr;
 	ID3DBlob* pixelShaderBuffer  = nullptr;
 
-	D3DX11CompileFromFileA("Resource/Shaders/DefaultShader_Specular.hlsl", NULL, NULL, "LightVertexShader", "vs_5_0", 0, 0, NULL, &vertexShaderBuffer, NULL, NULL);
-	D3DX11CompileFromFileA("Resource/Shaders/DefaultShader_Specular.hlsl", NULL, NULL, "LightPixelShader", "ps_5_0", 0, 0, NULL, &pixelShaderBuffer, NULL, NULL);
+	D3DX11CompileFromFileA("Resource/Shaders/DefaultShader_Skinned.hlsl", NULL, NULL, "VS", "vs_5_0", 0, 0, NULL, &vertexShaderBuffer, NULL, NULL);
+	D3DX11CompileFromFileA("Resource/Shaders/DefaultShader_Skinned.hlsl", NULL, NULL, "PS", "ps_5_0", 0, 0, NULL, &pixelShaderBuffer, NULL, NULL);
 
 	DirectXManager::GetInstance()->GetDevice()->CreateVertexShader(vertexShaderBuffer->GetBufferPointer(), vertexShaderBuffer->GetBufferSize(), NULL, &VS_Shader);
 	DirectXManager::GetInstance()->GetDevice()->CreatePixelShader(pixelShaderBuffer->GetBufferPointer(), pixelShaderBuffer->GetBufferSize(), NULL, &PS_Shader);

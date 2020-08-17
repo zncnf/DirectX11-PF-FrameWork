@@ -13,7 +13,7 @@ SkinnedMeshRenderer::SkinnedMeshRenderer(GameObject * _object, const aiScene * _
 
 	name = _node->mName.data;
 
-	pShader = ResourceManager::GetInstance()->GetShader("DefaultShader_Skinned");
+	pShader = ResourceManager::GetInstance()->GetShader("DefaultShader_Specular");
 }
 
 SkinnedMeshRenderer::~SkinnedMeshRenderer()

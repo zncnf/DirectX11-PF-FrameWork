@@ -32,12 +32,15 @@ public:
 	vector<T*> GetComponentsInChildren();
 	template<typename T>
 	vector<T*> GetComponentsInAllChildren();
-	template<typename T>
-	void NodeProcess(GameObject* object, vector<T*> & vec);
-
+	GameObject* GetRootObject();
 	void AddChild(GameObject* _gameObject);
+
+private:
+	template<typename T>
+	void ChildProcess(GameObject* object, vector<T*> & vec);
+	GameObject* ParentProcess(GameObject* object);
+
 public:
-	GameObject* gameObject       = nullptr;
 	GameObject* parent           = nullptr;
 	Transform* transform         = nullptr;
 	RectTransform* rectTransform = nullptr;
@@ -87,14 +90,14 @@ inline vector<T*> GameObject::GetComponentsInAllChildren()
 {
 	vector<T*> allChildsComponents;
 
-	NodeProcess(this, allChildsComponents);
+	ChildProcess(this, allChildsComponents);
 
 	return allChildsComponents;
 }
 
-//모든 계층구조를 탐색하기위한 재귀함수
+//모든 자식 계층구조를 탐색하기위한 재귀함수
 template<typename T>
-inline void GameObject::NodeProcess(GameObject * object, vector<T*>& vec)
+inline void GameObject::ChildProcess(GameObject * object, vector<T*>& vec)
 {
 	for (UINT i = 0; i < object->childs.size(); i++)
 	{
@@ -103,6 +106,6 @@ inline void GameObject::NodeProcess(GameObject * object, vector<T*>& vec)
 			vec.push_back(object->childs[i]->GetComponent<T>());
 		}
 
-		NodeProcess(object->childs[i], vec);
+		ChildProcess(object->childs[i], vec);
 	}
 }
