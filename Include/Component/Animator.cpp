@@ -165,7 +165,9 @@ void Animator::CalcInterpolatedPosition(aiVector3D & Out, double AnimationTime, 
 
 const aiNodeAnim * Animator::FindNodeAnim(const aiAnimation * pAnimation, const std::string& NodeName)
 {
-	for (UINT i = 0; i < pAnimation->mNumChannels; i++) 
+	UINT i;
+
+	for (i = pAnimation->mNumChannels; i--;)
 		if (std::strcmp(NodeName.data(), pAnimation->mChannels[i]->mNodeName.data) == 0)
 			return pAnimation->mChannels[i];
 
@@ -202,7 +204,10 @@ void Animator::ReadNodeHeirarchy(double AnimationTime, const aiNode * pNode, con
 
 	aiMatrix4x4 GlobalTransformation = ParentTransform * NodeTransformation;;
 
-	for (UINT i = 0; i < renderers.size(); i++)
+	UINT i = 0;
+	UINT renderersSize = renderers.size();
+
+	for (i = renderersSize; i--;)
 	{
 		if (renderers[i]->boneMapping.find(NodeName) != renderers[i]->boneMapping.end()) // <- frame 저하 부분.
 		{
@@ -212,7 +217,7 @@ void Animator::ReadNodeHeirarchy(double AnimationTime, const aiNode * pNode, con
 		}
 	}	
 
-	for (UINT i = 0; i < pNode->mNumChildren; i++) {
+	for (i = pNode->mNumChildren; i--;) {
 		ReadNodeHeirarchy(AnimationTime, pNode->mChildren[i], GlobalTransformation);
 	}
 }
