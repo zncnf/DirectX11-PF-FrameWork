@@ -32,9 +32,9 @@ private:
 	bool animationStop;
 	bool animationPlaying;
 
-	UINT FindScaling(double AnimationTime, const aiNodeAnim* pNodeAnim);
-	UINT FindRotation(double AnimationTime, const aiNodeAnim* pNodeAnim);
-	UINT FindPosition(double AnimationTime, const aiNodeAnim* pNodeAnim);
+	//UINT FindScaling(double AnimationTime, const aiNodeAnim* pNodeAnim);
+	//UINT FindRotation(double AnimationTime, const aiNodeAnim* pNodeAnim);
+	//UINT FindPosition(double AnimationTime, const aiNodeAnim* pNodeAnim);
 
 	void CalcInterpolatedScaling(aiVector3D& Out, double AnimationTime, const aiNodeAnim* pNodeAnim);
 	void CalcInterpolatedRotation(aiQuaternion& Out, double AnimationTime, const aiNodeAnim* pNodeAnim);

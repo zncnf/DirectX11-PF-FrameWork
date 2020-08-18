@@ -9,7 +9,6 @@ SkinnedMeshRenderer::SkinnedMeshRenderer(GameObject * _object, const aiScene * _
 	node       = _node;
 
 	indexoffset = 0;
-	//boneCount = 0;
 
 	name = _node->mName.data;
 
@@ -261,7 +260,15 @@ void SkinnedMeshRenderer::ProcessMaterial(aiMaterial * mat, const aiScene * scen
 		path_texture = string(str.C_Str());
 		path_texture = gameObject->directory + '/' + path_texture;
 
+		if (ResourceManager::GetInstance()->GetShaderResource(path_texture.c_str()))
+	{
+		m_ShaderResource = ResourceManager::GetInstance()->GetShaderResource(path_texture.c_str());
+	}
+	else
+	{
 		D3DX11CreateShaderResourceViewFromFileA(DirectXManager::GetInstance()->GetDevice(), path_texture.c_str(), nullptr, nullptr, &m_ShaderResource, nullptr);
+		ResourceManager::GetInstance()->AddShaderResource(path_texture.c_str(), m_ShaderResource);
+	}
 	}
 }
 
@@ -272,10 +279,19 @@ void SkinnedMeshRenderer::SetShader(std::shared_ptr<Shader> _pShader)
 
 void SkinnedMeshRenderer::SetTexturePath(string path)
 {
-	D3DX11CreateShaderResourceViewFromFileA(DirectXManager::GetInstance()->GetDevice(), path.c_str(), nullptr, nullptr, &m_ShaderResource, nullptr);
+	if (ResourceManager::GetInstance()->GetShaderResource(path))
+	{
+		m_ShaderResource = ResourceManager::GetInstance()->GetShaderResource(path);
+	}
+	else
+	{
+		D3DX11CreateShaderResourceViewFromFileA(DirectXManager::GetInstance()->GetDevice(), path.c_str(), nullptr, nullptr, &m_ShaderResource, nullptr);
+		ResourceManager::GetInstance()->AddShaderResource(path, m_ShaderResource);
+	}
 }
 
 std::shared_ptr<Shader> SkinnedMeshRenderer::GetShader()
 {
 	return pShader;
 }
+

@@ -103,8 +103,11 @@ void Camera::CameraController()
 		gameObject->transform->Translate(D3DXVECTOR3(0, 1, 0) * moveSpeed);
 	}
 
-	RotateY(InputManager::GetInstance()->m_mouseState.lX / 4);
-	Pitch(InputManager::GetInstance()->m_mouseState.lY / 4);
+	if (InputManager::GetInstance()->MouseDown(0))
+	{
+		RotateY(InputManager::GetInstance()->m_mouseState.lX / 4);
+		Pitch(InputManager::GetInstance()->m_mouseState.lY / 4);
+	}
 }
 
 void Camera::UpdateViewMatrix()

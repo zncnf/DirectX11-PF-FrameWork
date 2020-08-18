@@ -10,6 +10,7 @@ AnimationClip::AnimationClip(const std::string _clipname, const std::string & fi
 
 AnimationClip::~AnimationClip()
 {
+	aiReleaseImport(pScene);
 }
 
 void AnimationClip::Init()

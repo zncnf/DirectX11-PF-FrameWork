@@ -32,7 +32,7 @@ public:
 	aiMaterial* pMaterial;
 
 	std::vector<BoneInfo> boneInfo;
-	std::map<std::string, UINT> boneMapping;
+	std::unordered_map<std::string, UINT> boneMapping;
 
 private:
 	const aiScene* pScene = nullptr;
@@ -45,7 +45,6 @@ private:
 
 	UINT indexCount;
 	UINT vertexCount;
-	UINT boneCount;
 
 	std::vector<VertexType_SkindMesh> _vertices;
 	std::vector<VertexBoneData> _bones;
