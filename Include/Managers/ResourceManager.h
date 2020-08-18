@@ -22,6 +22,9 @@ public:
 	shared_ptr<Shader> GetShader(const std::string filename);
 	void AddShader(string name, shared_ptr<Shader> shader);
 
+	ID3D11ShaderResourceView* GetShaderResource(const std::string filepath);
+	void AddShaderResource(string path, ID3D11ShaderResourceView* shaderResource);
+
 	aiMesh* GetMesh(const std::string filename);
 	void AddMesh(string name, aiMesh* mesh);
 
@@ -36,5 +39,6 @@ private:
 	map<string, shared_ptr<Shader>> shaders;
 	map<string, aiMesh*> meshs;
 	map<string, aiMaterial*> materials;
+	map<string, ID3D11ShaderResourceView*> shaderResources;
 };
 

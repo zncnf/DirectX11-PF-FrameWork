@@ -8,6 +8,7 @@ ResourceManager::~ResourceManager()
 	shaders.clear();
 	meshs.clear();
 	materials.clear();
+	shaderResources.clear();
 }
 
 ResourceManager * ResourceManager::GetInstance()
@@ -29,7 +30,7 @@ void ResourceManager::ReleaseInstance()
 
 shared_ptr<Shader> ResourceManager::GetShader(const std::string filename)
 {
-	if (shaders.find(filename)->second)
+	if (shaders.find(filename) != shaders.end())
 	{
 		return shaders.find(filename)->second;
 	}
@@ -40,6 +41,21 @@ shared_ptr<Shader> ResourceManager::GetShader(const std::string filename)
 void ResourceManager::AddShader(string name, shared_ptr<Shader> shader)
 {
 	shaders.insert(make_pair(name, shader));
+}
+
+ID3D11ShaderResourceView* ResourceManager::GetShaderResource(const std::string filepath)
+{
+	if (shaderResources.find(filepath) != shaderResources.end())
+	{
+		return shaderResources.find(filepath)->second;
+	}
+
+	return nullptr;
+}
+
+void ResourceManager::AddShaderResource(string path, ID3D11ShaderResourceView* shaderResource)
+{
+	shaderResources.insert(make_pair(path, shaderResource));
 }
 
 aiMesh* ResourceManager::GetMesh(const std::string filename)

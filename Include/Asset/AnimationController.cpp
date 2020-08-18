@@ -7,6 +7,16 @@ AnimationController::AnimationController()
 
 AnimationController::~AnimationController()
 {
+	std::map<std::string, AnimationClip*>::iterator iter;
+
+	for (iter = clips.begin(); iter != clips.end(); ++iter)
+	{
+		AnimationClip* anim = iter->second;
+		delete anim;
+		iter->second = nullptr;
+	}
+
+	clips.clear();
 }
 
 void AnimationController::AddAnimationClip(AnimationClip * clip)

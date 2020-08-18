@@ -14,6 +14,9 @@ Animator::Animator(GameObject* _object)
 
 Animator::~Animator()
 {
+	delete controller;
+
+	renderers.clear();
 }
 
 void Animator::Init()
@@ -59,42 +62,42 @@ void Animator::PlayAnimationWithClipName(std::string clipName)
 	}
 }
 
-UINT Animator::FindScaling(double AnimationTime, const aiNodeAnim * pNodeAnim)
-{
-	assert(pNodeAnim->mNumScalingKeys > 0);
-
-	for (UINT i = 0; i < pNodeAnim->mNumScalingKeys - 1; i++) {
-		if (AnimationTime < (float)pNodeAnim->mScalingKeys[i + 1].mTime) {
-			return i;
-		}
-	}
-
-	return 0;
-}
-
-UINT Animator::FindRotation(double AnimationTime, const aiNodeAnim * pNodeAnim)
-{
-	assert(pNodeAnim->mNumRotationKeys > 0);
-
-	for (UINT i = 0; i < pNodeAnim->mNumRotationKeys - 1; i++) {
-		if (AnimationTime < (float)pNodeAnim->mRotationKeys[i + 1].mTime) {
-			return i;
-		}
-	}
-
-	return 0;
-}
-
-UINT Animator::FindPosition(double AnimationTime, const aiNodeAnim * pNodeAnim)
-{
-	for (UINT i = 0; i < pNodeAnim->mNumPositionKeys - 1; i++) {
-		if (AnimationTime < (float)pNodeAnim->mPositionKeys[i + 1].mTime) {
-			return i;			
-		}
-	}
-
-	return 0;
-}
+//UINT Animator::FindScaling(double AnimationTime, const aiNodeAnim * pNodeAnim)
+//{
+//	assert(pNodeAnim->mNumScalingKeys > 0);
+//
+//	for (UINT i = 0; i < pNodeAnim->mNumScalingKeys - 1; i++) {
+//		if (AnimationTime < (float)pNodeAnim->mScalingKeys[i + 1].mTime) {
+//			return i;
+//		}
+//	}
+//
+//	return 0;
+//}
+//
+//UINT Animator::FindRotation(double AnimationTime, const aiNodeAnim * pNodeAnim)
+//{
+//	assert(pNodeAnim->mNumRotationKeys > 0);
+//
+//	for (UINT i = 0; i < pNodeAnim->mNumRotationKeys - 1; i++) {
+//		if (AnimationTime < (float)pNodeAnim->mRotationKeys[i + 1].mTime) {
+//			return i;
+//		}
+//	}
+//
+//	return 0;
+//}
+//
+//UINT Animator::FindPosition(double AnimationTime, const aiNodeAnim * pNodeAnim)
+//{
+//	for (UINT i = 0; i < pNodeAnim->mNumPositionKeys - 1; i++) {
+//		if (AnimationTime < (float)pNodeAnim->mPositionKeys[i + 1].mTime) {
+//			return i;			
+//		}
+//	}
+//
+//	return 0;
+//}
 
 void Animator::CalcInterpolatedScaling(aiVector3D & Out, double AnimationTime, const aiNodeAnim * pNodeAnim)
 {
@@ -103,7 +106,7 @@ void Animator::CalcInterpolatedScaling(aiVector3D & Out, double AnimationTime, c
 		return;
 	}
 
-	UINT ScalingIndex = FindScaling(AnimationTime, pNodeAnim);
+	UINT ScalingIndex = (int)AnimationTime;
 	UINT NextScalingIndex = (ScalingIndex + 1);
 
 	//assert(NextScalingIndex < pNodeAnim->mNumScalingKeys);
@@ -125,7 +128,7 @@ void Animator::CalcInterpolatedRotation(aiQuaternion & Out, double AnimationTime
 		return;
 	}
 
-	UINT RotationIndex = FindRotation(AnimationTime, pNodeAnim);
+	UINT RotationIndex = (int)AnimationTime;
 	UINT NextRotationIndex = (RotationIndex + 1);
 	//assert(NextRotationIndex < pNodeAnim->mNumRotationKeys);
 	float DeltaTime = (float)(pNodeAnim->mRotationKeys[NextRotationIndex].mTime - pNodeAnim->mRotationKeys[RotationIndex].mTime);
@@ -145,7 +148,7 @@ void Animator::CalcInterpolatedPosition(aiVector3D & Out, double AnimationTime, 
 		return;
 	}
 
-	UINT PositionIndex = FindPosition(AnimationTime, pNodeAnim);
+	UINT PositionIndex = (int)AnimationTime;
 	UINT NextPositionIndex = (PositionIndex + 1);
 
 	//assert(NextPositionIndex < pNodeAnim->mNumPositionKeys);
@@ -162,7 +165,8 @@ const aiNodeAnim * Animator::FindNodeAnim(const aiAnimation * pAnimation, const 
 {
 	for (UINT i = 0; i < pAnimation->mNumChannels; i++) 
 	{
-		if (pAnimation->mChannels[i]->mNodeName.C_Str() == NodeName) {
+		if (NodeName.compare(pAnimation->mChannels[i]->mNodeName.C_Str()) == 0)
+		{
 			return pAnimation->mChannels[i];
 		}
 	}
@@ -202,11 +206,13 @@ void Animator::ReadNodeHeirarchy(double AnimationTime, const aiNode * pNode, con
 
 	for (UINT i = 0; i < renderers.size(); i++)
 	{
+		//renderers[i]->boneMapping.find(NodeName);
+
 		if (renderers[i]->boneMapping.find(NodeName) != renderers[i]->boneMapping.end()) // <- frame 저하 부분.
 		{
-			UINT BoneIndex = renderers[i]->boneMapping.at(NodeName);
-			const aiMatrix4x4 m = m_GlobalInverseTransform * GlobalTransformation * renderers[i]->boneInfo.at(BoneIndex).boneOffset;
-			renderers[i]->boneInfo.at(BoneIndex).finalTransformation = m;
+			UINT BoneIndex = renderers[i]->boneMapping[NodeName];
+			const aiMatrix4x4 m = m_GlobalInverseTransform * GlobalTransformation * renderers[i]->boneInfo[BoneIndex].boneOffset;
+			renderers[i]->boneInfo[BoneIndex].finalTransformation = m;
 		}
 	}	
 
