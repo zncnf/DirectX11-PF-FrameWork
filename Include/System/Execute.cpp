@@ -115,9 +115,19 @@ void Execute::Set2DObject()
 
 void Execute::Render3D()
 {
-	if (InputManager::GetInstance()->KeyboardDownOnce(DIK_P))
+	if (GameManager::GetInstance()->gameTime > 5.0f)
 	{
-		crusaderKnight->GetComponent<Animator>()->PlayAnimationWithClipName("attack1");
+		if (crusaderKnight->GetComponent<Animator>()->animationOver)
+		{
+			crusaderKnight->GetComponent<Animator>()->PlayAnimationWithClipName("run");
+		}
+		else
+		{
+			if (!crusaderKnight->GetComponent<Animator>()->animationPlaying)
+			{
+				crusaderKnight->GetComponent<Animator>()->PlayAnimationWithClipName("walk");
+			}
+		}
 	}
 
 	directionalLight->Update();

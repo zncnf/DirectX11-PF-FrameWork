@@ -20,8 +20,6 @@ public:
 	void Update();
 
 public:
-	void ShowHierarchy(GameObject* _object);
-public:
 	D3DXMATRIX worldMatrix;
 	D3DXMATRIX viewMatrix;
 	D3DXMATRIX viewMatrix_2D;

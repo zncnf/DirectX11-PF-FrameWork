@@ -17,6 +17,11 @@ public:
 	void AddController(AnimationController* _controller);
 	void PlayAnimationWithClipName(std::string clipName);
 
+public:
+	bool animationStop;
+	bool animationPlaying;
+	bool animationOver;
+
 private:
 	AnimationController* controller;
 
@@ -29,18 +34,15 @@ private:
 
 	AnimationClip* clip;
 
-	bool animationStop;
-	bool animationPlaying;
-
-	//UINT FindScaling(double AnimationTime, const aiNodeAnim* pNodeAnim);
-	//UINT FindRotation(double AnimationTime, const aiNodeAnim* pNodeAnim);
-	//UINT FindPosition(double AnimationTime, const aiNodeAnim* pNodeAnim);
+	UINT FindScaling(float AnimationTime, const aiNodeAnim* pNodeAnim);
+	UINT FindRotation(float AnimationTime, const aiNodeAnim* pNodeAnim);
+	UINT FindPosition(float AnimationTime, const aiNodeAnim* pNodeAnim);
 
 	void CalcInterpolatedScaling(aiVector3D& Out, double AnimationTime, const aiNodeAnim* pNodeAnim);
 	void CalcInterpolatedRotation(aiQuaternion& Out, double AnimationTime, const aiNodeAnim* pNodeAnim);
 	void CalcInterpolatedPosition(aiVector3D& Out, double AnimationTime, const aiNodeAnim* pNodeAnim);
 
-	const aiNodeAnim* FindNodeAnim(const aiAnimation* pAnimation, const std::string NodeName);
+	const aiNodeAnim* FindNodeAnim(const aiAnimation* pAnimation, const std::string& NodeName);
 
 	void ReadNodeHeirarchy(double AnimationTime, const aiNode* pNode, const aiMatrix4x4& ParentTransform);
 

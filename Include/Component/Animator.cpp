@@ -10,6 +10,7 @@ Animator::Animator(GameObject* _object)
 
 	animationStop = true;
 	animationPlaying = false;
+	animationOver = false;
 }
 
 Animator::~Animator()
@@ -54,6 +55,7 @@ void Animator::PlayAnimationWithClipName(std::string clipName)
 
 		animationStop = false;
 		animationPlaying = true;
+		animationOver = false;
 
 		for (auto i : gameObject->GetComponentsInAllChildren<SkinnedMeshRenderer>())
 		{
@@ -62,42 +64,42 @@ void Animator::PlayAnimationWithClipName(std::string clipName)
 	}
 }
 
-//UINT Animator::FindScaling(double AnimationTime, const aiNodeAnim * pNodeAnim)
-//{
-//	assert(pNodeAnim->mNumScalingKeys > 0);
-//
-//	for (UINT i = 0; i < pNodeAnim->mNumScalingKeys - 1; i++) {
-//		if (AnimationTime < (float)pNodeAnim->mScalingKeys[i + 1].mTime) {
-//			return i;
-//		}
-//	}
-//
-//	return 0;
-//}
-//
-//UINT Animator::FindRotation(double AnimationTime, const aiNodeAnim * pNodeAnim)
-//{
-//	assert(pNodeAnim->mNumRotationKeys > 0);
-//
-//	for (UINT i = 0; i < pNodeAnim->mNumRotationKeys - 1; i++) {
-//		if (AnimationTime < (float)pNodeAnim->mRotationKeys[i + 1].mTime) {
-//			return i;
-//		}
-//	}
-//
-//	return 0;
-//}
-//
-//UINT Animator::FindPosition(double AnimationTime, const aiNodeAnim * pNodeAnim)
-//{
-//	for (UINT i = 0; i < pNodeAnim->mNumPositionKeys - 1; i++) {
-//		if (AnimationTime < (float)pNodeAnim->mPositionKeys[i + 1].mTime) {
-//			return i;			
-//		}
-//	}
-//
-//	return 0;
-//}
+UINT Animator::FindScaling(float AnimationTime, const aiNodeAnim * pNodeAnim)
+{
+	assert(pNodeAnim->mNumScalingKeys > 0);
+
+	for (UINT i = 0; i < pNodeAnim->mNumScalingKeys - 1; i++) {
+		if (AnimationTime < (float)pNodeAnim->mScalingKeys[i + 1].mTime) {
+			return i;
+		}
+	}
+
+	return 0;
+}
+
+UINT Animator::FindRotation(float AnimationTime, const aiNodeAnim * pNodeAnim)
+{
+	assert(pNodeAnim->mNumRotationKeys > 0);
+
+	for (UINT i = 0; i < pNodeAnim->mNumRotationKeys - 1; i++) {
+		if (AnimationTime < (float)pNodeAnim->mRotationKeys[i + 1].mTime) {
+			return i;
+		}
+	}
+
+	return 0;
+}
+
+UINT Animator::FindPosition(float AnimationTime, const aiNodeAnim * pNodeAnim)
+{
+	for (UINT i = 0; i < pNodeAnim->mNumPositionKeys - 1; i++) {
+		if (AnimationTime < (float)pNodeAnim->mPositionKeys[i + 1].mTime) {
+			return i;
+		}
+	}
+
+	return 0;
+}
 
 void Animator::CalcInterpolatedScaling(aiVector3D & Out, double AnimationTime, const aiNodeAnim * pNodeAnim)
 {
@@ -106,7 +108,7 @@ void Animator::CalcInterpolatedScaling(aiVector3D & Out, double AnimationTime, c
 		return;
 	}
 
-	UINT ScalingIndex = (int)AnimationTime;
+	UINT ScalingIndex = FindScaling(AnimationTime, pNodeAnim);
 	UINT NextScalingIndex = (ScalingIndex + 1);
 
 	//assert(NextScalingIndex < pNodeAnim->mNumScalingKeys);
@@ -128,7 +130,7 @@ void Animator::CalcInterpolatedRotation(aiQuaternion & Out, double AnimationTime
 		return;
 	}
 
-	UINT RotationIndex = (int)AnimationTime;
+	UINT RotationIndex = FindRotation(AnimationTime, pNodeAnim);
 	UINT NextRotationIndex = (RotationIndex + 1);
 	//assert(NextRotationIndex < pNodeAnim->mNumRotationKeys);
 	float DeltaTime = (float)(pNodeAnim->mRotationKeys[NextRotationIndex].mTime - pNodeAnim->mRotationKeys[RotationIndex].mTime);
@@ -148,7 +150,7 @@ void Animator::CalcInterpolatedPosition(aiVector3D & Out, double AnimationTime, 
 		return;
 	}
 
-	UINT PositionIndex = (int)AnimationTime;
+	UINT PositionIndex = FindPosition(AnimationTime, pNodeAnim);
 	UINT NextPositionIndex = (PositionIndex + 1);
 
 	//assert(NextPositionIndex < pNodeAnim->mNumPositionKeys);
@@ -161,22 +163,18 @@ void Animator::CalcInterpolatedPosition(aiVector3D & Out, double AnimationTime, 
 	Out = Start + Factor * Delta;
 }
 
-const aiNodeAnim * Animator::FindNodeAnim(const aiAnimation * pAnimation, const std::string NodeName)
+const aiNodeAnim * Animator::FindNodeAnim(const aiAnimation * pAnimation, const std::string& NodeName)
 {
 	for (UINT i = 0; i < pAnimation->mNumChannels; i++) 
-	{
-		if (NodeName.compare(pAnimation->mChannels[i]->mNodeName.C_Str()) == 0)
-		{
+		if (std::strcmp(NodeName.data(), pAnimation->mChannels[i]->mNodeName.data) == 0)
 			return pAnimation->mChannels[i];
-		}
-	}
 
 	return nullptr;
 }
 
 void Animator::ReadNodeHeirarchy(double AnimationTime, const aiNode * pNode, const aiMatrix4x4 & ParentTransform)
 {
-	NodeName = pNode->mName.C_Str();
+	NodeName = pNode->mName.data;
 
 	aiMatrix4x4 NodeTransformation = pNode->mTransformation;
 
@@ -206,8 +204,6 @@ void Animator::ReadNodeHeirarchy(double AnimationTime, const aiNode * pNode, con
 
 	for (UINT i = 0; i < renderers.size(); i++)
 	{
-		//renderers[i]->boneMapping.find(NodeName);
-
 		if (renderers[i]->boneMapping.find(NodeName) != renderers[i]->boneMapping.end()) // <- frame 저하 부분.
 		{
 			UINT BoneIndex = renderers[i]->boneMapping[NodeName];
@@ -233,6 +229,7 @@ void Animator::Play(const aiNode * _rootNode)
 	{
 		animationStop = true;
 		animationPlaying = false;
+		animationOver = true;
 		AnimationTime = 0;
 		TimeInSeconds = 0;
 	}

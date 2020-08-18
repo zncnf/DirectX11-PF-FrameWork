@@ -34,6 +34,7 @@ public:
 	vector<T*> GetComponentsInAllChildren();
 	GameObject* GetRootObject();
 	void AddChild(GameObject* _gameObject);
+	void ShowHierarchy(GameObject* _object);
 
 private:
 	template<typename T>

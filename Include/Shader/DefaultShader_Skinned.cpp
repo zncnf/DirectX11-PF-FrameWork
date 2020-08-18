@@ -160,7 +160,7 @@ void DefaultShader_Skinned::Update(D3DXMATRIX world, D3DXMATRIX view, D3DXMATRIX
 		mat._43 = boneInfo->at(i).finalTransformation.d3;
 		mat._44 = boneInfo->at(i).finalTransformation.d4;
 
-		dataPtr4->bones[i] = mat;
+		memcpy(dataPtr4->bones[i], mat, sizeof(D3DXMATRIX));
 	}
 
 	DirectXManager::GetInstance()->GetDeviceContext()->Unmap(boneBuffer, 0);

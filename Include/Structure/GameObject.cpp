@@ -204,3 +204,12 @@ void GameObject::AddChild(GameObject * _gameObject)
 	_gameObject->parent = this;
 }
 
+void GameObject::ShowHierarchy(GameObject* _object)
+{
+	for (int i = 0; i < _object->childs.size(); i++)
+	{
+		cout << _object->childs[i]->name << endl;
+		ShowHierarchy(_object->childs[i]);
+	}
+}
+
